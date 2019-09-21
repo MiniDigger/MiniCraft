@@ -44,7 +44,7 @@ public class ServerStatusResponse {
                 .add("version", version)
                 .add("players", players)
                 .add("description", description)
-                .add("favicon", favicon)
+                .add("favicon", favicon == null)
                 .toString();
     }
 

@@ -74,7 +74,7 @@ public class MiniServerPacketHandler implements PacketHandler {
                 new ServerStatusResponse.Players(255, 0, List.of(
                         new ServerStatusResponse.Players.Player("Test", UUID.randomUUID()))),
                 TextComponent.builder("Test.").color(TextColor.RED).append(" Test2").color(TextColor.GREEN).build(),
-                null);
+                server.getServerIcon());
 
         ClientStatusResponsePacket responsePacket = new ClientStatusResponsePacket();
         responsePacket.setResponse(response);

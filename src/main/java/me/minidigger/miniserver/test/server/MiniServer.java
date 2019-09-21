@@ -29,20 +29,9 @@ public class MiniServer {
         packetRegistry.init();
 
         Server server = new Server();
-        PacketHandler packetHandler = new MiniServerPacketHandler(server);
+        server.start();
 
-        Thread serverThread = new Thread(()-> {
-            while (true) {
-                server.tick();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        serverThread.setName("MiniServer Thread");
-        serverThread.start();
+        PacketHandler packetHandler = new MiniServerPacketHandler(server);
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

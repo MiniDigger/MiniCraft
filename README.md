@@ -9,9 +9,9 @@ Nothing exciting here, just learning netty.
 - [x] Packet handling
   - [x] Sending
   - [x] Receiving
-- [ ] Server List ping
+- [x] Server List ping
   - [x] JSON Response
-  - [ ] Favicon
+  - [x] Favicon (woooo https://i.imgur.com/v8oVkem.png)
   - [x] Online Status
 - [ ] Login
   - [x] offline mode
