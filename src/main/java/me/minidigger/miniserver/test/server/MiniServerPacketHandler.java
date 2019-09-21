@@ -15,12 +15,18 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
+import me.minidigger.miniserver.test.model.Dimension;
+import me.minidigger.miniserver.test.model.GameMode;
+import me.minidigger.miniserver.test.model.LevelType;
+import me.minidigger.miniserver.test.model.Position;
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketState;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnectPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
@@ -76,11 +82,7 @@ public class MiniServerPacketHandler implements PacketHandler {
         log.info("{} is trying to login", packet.getUsername());
         connection.setUsername(packet.getUsername());
         if (offlineMode) {
-            ClientLoginSuccess loginSuccess = new ClientLoginSuccess();
-            loginSuccess.setUsername(packet.getUsername());
-            loginSuccess.setUuid(UUID.randomUUID());
-            connection.sendPacket(loginSuccess);
-            connection.setState(PacketState.PLAY);
+            join(connection);
         } else {
             ClientLoginEncryptionRequest request = new ClientLoginEncryptionRequest();
             request.setServerId("MiniServer");
@@ -92,10 +94,28 @@ public class MiniServerPacketHandler implements PacketHandler {
 
     @Override
     public void handle(MiniConnection connection, ServerLoginEncryptionResponse packet) {
+        join(connection);
+    }
+
+    private void join(MiniConnection connection) {
         ClientLoginSuccess loginSuccess = new ClientLoginSuccess();
         loginSuccess.setUsername(connection.getUsername());
         loginSuccess.setUuid(UUID.randomUUID());
         connection.sendPacket(loginSuccess);
         connection.setState(PacketState.PLAY);
+
+        ClientPlayJoinGame joinGame = new ClientPlayJoinGame();
+        joinGame.setEntityId(-1);
+        joinGame.setGameMode(GameMode.CREATIVE);
+        joinGame.setDimension(Dimension.OVERWORLD);
+        joinGame.setMaxplayers(255);
+        joinGame.setLevelType(LevelType.AMPLIFIED);
+        joinGame.setViewDistance(32);
+        joinGame.setReducedDebugInfo(false);
+        connection.sendPacket(joinGame);
+
+        ClientPlayPositionAndLook positionAndLook = new ClientPlayPositionAndLook();
+        positionAndLook.setPosition(new Position(0,0,0));
+        connection.sendPacket(positionAndLook);
     }
 }

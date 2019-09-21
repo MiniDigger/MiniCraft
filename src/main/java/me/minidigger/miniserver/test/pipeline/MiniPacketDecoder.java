@@ -38,6 +38,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
 
         if (packetClass == null) {
             log.warn("Couldn't find a packet class for {}:{}:{}", PacketDirection.TO_SERVER, connection.getState(), packetId);
+            in.skipBytes(in.readableBytes());
             return;
         }
 

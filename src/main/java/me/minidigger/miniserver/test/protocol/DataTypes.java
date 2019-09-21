@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
+import me.minidigger.miniserver.test.model.Position;
 
 public class DataTypes {
 
@@ -114,5 +115,24 @@ public class DataTypes {
     public static void writeByteArray(byte[] arr, ByteBuf buf) {
         writeVarInt(arr.length, buf);
         buf.writeBytes(arr);
+    }
+
+    public static boolean readBoolean(ByteBuf buf) {
+        byte b = buf.readByte();
+        if (b == 0x1) return true;
+        if (b == 0x0) return false;
+        throw new IllegalStateException("Can't parse boolean " + b);
+    }
+
+    public static void writeBoolean(boolean val, ByteBuf buf) {
+        buf.writeByte(val ? 0x1 : 0x0);
+    }
+
+    public static void writePosition(Position position, ByteBuf buf) {
+        buf.writeDouble(position.getX());
+        buf.writeDouble(position.getY());
+        buf.writeDouble(position.getZ());
+        buf.writeFloat(position.getYaw());
+        buf.writeFloat(position.getPitch());
     }
 }

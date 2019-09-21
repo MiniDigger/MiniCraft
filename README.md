@@ -18,8 +18,21 @@ Nothing exciting here, just learning netty.
   - [ ] encryption
   - [ ] compression
 - [ ] Joining
+  - [ ] minecraft:brand plugin message (server and client)
+  - [ ] server difficulty
+  - [ ] player abilities
+  - [ ] client settings
+  - [ ] chunk data
+  - [ ] spawn position
+  - [x] position and look (we can see stuff, yee https://i.imgur.com/JgLatwe.png)
+  - [ ] teleport confirm
 - [ ] chat
 - [ ] Everything else
+  
+### misc todo
+
+- [ ] support relative position/rotation
+- [ ] verify teleport ids
   
 ## Building
 
