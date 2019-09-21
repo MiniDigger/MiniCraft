@@ -28,7 +28,7 @@ public class MiniServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("decoder", new MiniPacketDecoder(packetRegistry, packetHandler));
 
         pipeline.addLast("lengthEncoder", new MiniPacketLengthEncoder());
-        pipeline.addLast("encoder", new MiniPacketEncoder());
+        pipeline.addLast("encoder", new MiniPacketEncoder(packetRegistry));
 
         pipeline.addLast("handler", new MiniServerHandler());
     }

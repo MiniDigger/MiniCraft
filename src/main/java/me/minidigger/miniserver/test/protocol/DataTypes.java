@@ -103,4 +103,14 @@ public class DataTypes {
     public static void writeJSON(Object object, ByteBuf buf) {
         writeString(gson.toJson(object), buf);
     }
+
+    public static ByteBuf readByteArray(ByteBuf buf) {
+        int len = readVarInt(buf);
+        return buf.readBytes(new byte[len]);
+    }
+
+    public static void writeByteArray(byte[] arr, ByteBuf buf) {
+        writeVarInt(arr.length, buf);
+        buf.writeBytes(arr);
+    }
 }

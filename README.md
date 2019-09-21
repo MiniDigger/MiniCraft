@@ -14,6 +14,9 @@ Nothing exciting here, just learning netty.
   - [ ] Favicon
   - [ ] Online Status
 - [ ] Login
+  - [x] offline mode
+  - [ ] encryption
+  - [ ] compression
 - [ ] Joining
 - [ ] Everything else
   

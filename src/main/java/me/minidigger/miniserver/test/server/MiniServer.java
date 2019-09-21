@@ -1,5 +1,9 @@
 package me.minidigger.miniserver.test.server;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -15,11 +19,11 @@ public class MiniServer {
         this.port = port;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
         new MiniServer(25565).run();
     }
 
-    public void run() {
+    public void run() throws NoSuchAlgorithmException {
         PacketRegistry packetRegistry = new PacketRegistry();
         packetRegistry.init();
 
