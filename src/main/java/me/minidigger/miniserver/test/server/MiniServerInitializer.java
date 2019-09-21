@@ -5,10 +5,10 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketRegistry;
-import me.minidigger.miniserver.test.server.pipeline.MiniPacketDecoder;
-import me.minidigger.miniserver.test.server.pipeline.MiniPacketEncoder;
-import me.minidigger.miniserver.test.server.pipeline.MiniPacketLengthDecoder;
-import me.minidigger.miniserver.test.server.pipeline.MiniPacketLengthEncoder;
+import me.minidigger.miniserver.test.pipeline.MiniPacketDecoder;
+import me.minidigger.miniserver.test.pipeline.MiniPacketEncoder;
+import me.minidigger.miniserver.test.pipeline.MiniPacketLengthDecoder;
+import me.minidigger.miniserver.test.pipeline.MiniPacketLengthEncoder;
 
 public class MiniServerInitializer extends ChannelInitializer<SocketChannel> {
 

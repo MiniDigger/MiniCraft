@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.server.pipeline;
+package me.minidigger.miniserver.test.pipeline;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.protocol;
+package me.minidigger.miniserver.test.server;
 
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.UUID;
 
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
+import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
-import me.minidigger.miniserver.test.server.MiniConnection;
 
-public class MiniServerPacketHandler implements PacketHandler{
+public class MiniServerPacketHandler implements PacketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MiniServerPacketHandler.class);
 

@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.server.pipeline;
+package me.minidigger.miniserver.test.pipeline;
 
 import java.util.List;
 
