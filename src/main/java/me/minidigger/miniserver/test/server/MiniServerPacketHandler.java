@@ -24,6 +24,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
+import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
@@ -33,6 +34,8 @@ public class MiniServerPacketHandler implements PacketHandler {
     private static final Logger log = LoggerFactory.getLogger(MiniServerPacketHandler.class);
 
     private KeyPair pair;
+
+    private boolean offlineMode = true;
 
     public MiniServerPacketHandler() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
@@ -71,14 +74,26 @@ public class MiniServerPacketHandler implements PacketHandler {
     @Override
     public void handle(MiniConnection connection, ServerLoginStartPacket packet) {
         log.info("{} is trying to login", packet.getUsername());
-//        ClientLoginEncryptionRequest request = new ClientLoginEncryptionRequest();
-//        request.setServerId("MiniServer");
-//        request.setKey(pair.getPublic().getEncoded());
-//        request.setToken(new byte[]{0xB, 0xA, 0xB, 0xE});
-//        connection.sendPacket(request);
+        connection.setUsername(packet.getUsername());
+        if (offlineMode) {
+            ClientLoginSuccess loginSuccess = new ClientLoginSuccess();
+            loginSuccess.setUsername(packet.getUsername());
+            loginSuccess.setUuid(UUID.randomUUID());
+            connection.sendPacket(loginSuccess);
+            connection.setState(PacketState.PLAY);
+        } else {
+            ClientLoginEncryptionRequest request = new ClientLoginEncryptionRequest();
+            request.setServerId("MiniServer");
+            request.setKey(pair.getPublic().getEncoded());
+            request.setToken(new byte[]{0xB, 0xA, 0xB, 0xE});
+            connection.sendPacket(request);
+        }
+    }
 
+    @Override
+    public void handle(MiniConnection connection, ServerLoginEncryptionResponse packet) {
         ClientLoginSuccess loginSuccess = new ClientLoginSuccess();
-        loginSuccess.setUsername(packet.getUsername());
+        loginSuccess.setUsername(connection.getUsername());
         loginSuccess.setUuid(UUID.randomUUID());
         connection.sendPacket(loginSuccess);
         connection.setState(PacketState.PLAY);

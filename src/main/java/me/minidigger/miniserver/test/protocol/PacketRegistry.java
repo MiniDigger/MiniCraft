@@ -15,6 +15,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
+import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
@@ -40,6 +41,7 @@ public class PacketRegistry {
 
         // login
         register(PacketDirection.TO_SERVER, PacketState.LOGIN, 0, ServerLoginStartPacket.class);
+        register(PacketDirection.TO_SERVER, PacketState.LOGIN, 1, ServerLoginEncryptionResponse.class);
 
         //
         // CLIENT
@@ -72,6 +74,7 @@ public class PacketRegistry {
     }
 
     public void fillInfo(Packet packet) {
+        // this is really ugly, lol
         var cell = serverRegistry.cellSet().stream().filter(c -> Objects.equals(c.getValue(), packet.getClass())).findFirst();
         if(cell.isEmpty()) {
             cell = clientRegistry.cellSet().stream().filter(c -> Objects.equals(c.getValue(), packet.getClass())).findFirst();

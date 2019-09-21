@@ -10,6 +10,7 @@ public class MiniConnection {
 
     private final ChannelHandlerContext ctx;
     private PacketState state = PacketState.HANDSHAKE;
+    private String username;
 
     public MiniConnection(ChannelHandlerContext ctx) {
         this.ctx = ctx;
@@ -29,5 +30,13 @@ public class MiniConnection {
 
     public void sendPacket(Packet packet) {
         ctx.channel().writeAndFlush(packet);
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
