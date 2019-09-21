@@ -9,14 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.desktop.PreferencesEvent;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
+import me.minidigger.miniserver.test.api.Server;
 import me.minidigger.miniserver.test.model.Dimension;
 import me.minidigger.miniserver.test.model.GameMode;
+import me.minidigger.miniserver.test.model.Key;
 import me.minidigger.miniserver.test.model.LevelType;
 import me.minidigger.miniserver.test.model.Position;
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
@@ -26,6 +29,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnectPacket
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
@@ -41,7 +45,7 @@ public class MiniServerPacketHandler implements PacketHandler {
 
     private KeyPair pair;
 
-    private boolean offlineMode = true;
+    private Server server = new Server();
 
     public MiniServerPacketHandler() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
@@ -81,7 +85,7 @@ public class MiniServerPacketHandler implements PacketHandler {
     public void handle(MiniConnection connection, ServerLoginStartPacket packet) {
         log.info("{} is trying to login", packet.getUsername());
         connection.setUsername(packet.getUsername());
-        if (offlineMode) {
+        if (server.isOfflineMode()) {
             join(connection);
         } else {
             ClientLoginEncryptionRequest request = new ClientLoginEncryptionRequest();
@@ -113,6 +117,11 @@ public class MiniServerPacketHandler implements PacketHandler {
         joinGame.setViewDistance(32);
         joinGame.setReducedDebugInfo(false);
         connection.sendPacket(joinGame);
+
+        ClientPlayPluginMessage brand = new ClientPlayPluginMessage();
+        brand.setChannel(Key.of("brand"));
+        brand.setData(server.getName().getBytes(StandardCharsets.UTF_8));
+        connection.sendPacket(brand);
 
         ClientPlayPositionAndLook positionAndLook = new ClientPlayPositionAndLook();
         positionAndLook.setPosition(new Position(0,0,0));

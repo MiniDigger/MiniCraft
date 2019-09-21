@@ -18,7 +18,8 @@ Nothing exciting here, just learning netty.
   - [ ] encryption
   - [ ] compression
 - [ ] Joining
-  - [ ] minecraft:brand plugin message (server and client)
+  - [x] server brand (wooo https://i.imgur.com/VbbRwo1.png)
+  - [ ] client brand
   - [ ] server difficulty
   - [ ] player abilities
   - [ ] client settings
