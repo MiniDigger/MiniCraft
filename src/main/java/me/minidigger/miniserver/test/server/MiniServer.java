@@ -8,6 +8,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import me.minidigger.miniserver.test.api.Server;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketRegistry;
 
@@ -27,7 +28,21 @@ public class MiniServer {
         PacketRegistry packetRegistry = new PacketRegistry();
         packetRegistry.init();
 
-        PacketHandler packetHandler = new MiniServerPacketHandler();
+        Server server = new Server();
+        PacketHandler packetHandler = new MiniServerPacketHandler(server);
+
+        Thread serverThread = new Thread(()-> {
+            while (true) {
+                server.tick();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        serverThread.setName("MiniServer Thread");
+        serverThread.start();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

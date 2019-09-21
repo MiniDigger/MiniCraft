@@ -29,6 +29,9 @@ Nothing exciting here, just learning netty.
   - [ ] teleport confirm
 - [ ] chat
 - [ ] Everything else
+- [ ] keep alive
+  - [x] send it so we don't get disconnected
+  - [ ] actually handle it properly
   
 ### misc todo
 

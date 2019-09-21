@@ -47,12 +47,14 @@ public class MiniServerPacketHandler implements PacketHandler {
 
     private KeyPair pair;
 
-    private Server server = new Server();
+    private Server server;
 
-    public MiniServerPacketHandler() throws NoSuchAlgorithmException {
+    public MiniServerPacketHandler(Server server) throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(1024);
         pair = keyGen.generateKeyPair();
+
+        this.server = server;
     }
 
     @Override
@@ -135,5 +137,8 @@ public class MiniServerPacketHandler implements PacketHandler {
         ClientPlayPositionAndLook positionAndLook = new ClientPlayPositionAndLook();
         positionAndLook.setPosition(new Position(0, 0, 0));
         connection.sendPacket(positionAndLook);
+
+        connection.getPlayer().setConnection(connection);
+        server.getPlayers().add(connection.getPlayer());
     }
 }

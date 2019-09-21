@@ -4,11 +4,24 @@ import com.google.common.base.MoreObjects;
 
 import java.util.UUID;
 
+import me.minidigger.miniserver.test.protocol.client.ClientPlayKeepAlive;
+import me.minidigger.miniserver.test.server.MiniConnection;
+
 public class Player {
 
     private UUID uuid;
     private String name;
     private String brand;
+
+    private MiniConnection connection;
+
+    public MiniConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(MiniConnection connection) {
+        this.connection = connection;
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -41,5 +54,9 @@ public class Player {
                 .add("name", name)
                 .add("brand", brand)
                 .toString();
+    }
+
+    public void tick() {
+        connection.sendPacket(new ClientPlayKeepAlive());
     }
 }
