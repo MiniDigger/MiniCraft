@@ -27,7 +27,7 @@ Nothing exciting here, just learning netty.
   - [ ] spawn position
   - [x] position and look (we can see stuff, yee https://i.imgur.com/JgLatwe.png)
   - [ ] teleport confirm
-- [ ] chat
+- [x] chat (woooo https://i.imgur.com/hiyP7TV.png)
 - [ ] Everything else
 - [ ] keep alive
   - [x] send it so we don't get disconnected
@@ -37,6 +37,7 @@ Nothing exciting here, just learning netty.
 
 - [ ] support relative position/rotation
 - [ ] verify teleport ids
+- [ ] figure out why chat format isn't working properly
   
 ## Building
 

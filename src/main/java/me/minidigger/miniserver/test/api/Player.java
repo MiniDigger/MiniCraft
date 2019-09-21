@@ -2,8 +2,13 @@ package me.minidigger.miniserver.test.api;
 
 import com.google.common.base.MoreObjects;
 
+import net.kyori.text.Component;
+
 import java.util.UUID;
 
+import me.minidigger.miniserver.test.model.ChatPosition;
+import me.minidigger.miniserver.test.protocol.Packet;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayChatMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayKeepAlive;
 import me.minidigger.miniserver.test.server.MiniConnection;
 
@@ -58,5 +63,16 @@ public class Player {
 
     public void tick() {
         connection.sendPacket(new ClientPlayKeepAlive());
+    }
+
+    public void sendMessage(Component component) {
+        sendMessage(component, ChatPosition.CHAT);
+    }
+
+    public void sendMessage(Component component, ChatPosition position) {
+        ClientPlayChatMessage packet = new ClientPlayChatMessage();
+        packet.setComponent(component);
+        packet.setPosition(position);
+        getConnection().sendPacket(packet);
     }
 }

@@ -2,6 +2,7 @@ package me.minidigger.miniserver.test.server;
 
 import com.google.gson.internal.$Gson$Preconditions;
 
+import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 import me.minidigger.miniserver.test.api.Player;
 import me.minidigger.miniserver.test.api.Server;
+import me.minidigger.miniserver.test.model.ChatPosition;
 import me.minidigger.miniserver.test.model.Dimension;
 import me.minidigger.miniserver.test.model.GameMode;
 import me.minidigger.miniserver.test.model.Key;
@@ -29,6 +31,7 @@ import me.minidigger.miniserver.test.protocol.PacketState;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnectPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayChatMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
@@ -37,6 +40,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayChatMessage;
 import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessagePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
@@ -110,6 +114,18 @@ public class MiniServerPacketHandler implements PacketHandler {
         Player player = connection.getPlayer();
         player.setBrand(new String(packet.getData(), StandardCharsets.UTF_8));
         log.info("Client brand of {} is {}", player.getName(), player.getBrand());
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayChatMessage packet) {
+        log.info("[CHAT] <{}> {}", connection.getPlayer().getName(), packet.getMessage());
+
+        Component msg = TextComponent.builder("<" + connection.getPlayer().getName() + "> ").color(TextColor.WHITE)
+                .append(packet.getMessage()).color(TextColor.GRAY).build();
+
+        for (Player player : server.getPlayers()) {
+            player.sendMessage(msg);
+        }
     }
 
     private void join(MiniConnection connection) {
