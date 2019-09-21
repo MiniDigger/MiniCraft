@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
+import me.minidigger.miniserver.test.api.Player;
 import me.minidigger.miniserver.test.api.Server;
 import me.minidigger.miniserver.test.model.Dimension;
 import me.minidigger.miniserver.test.model.GameMode;
@@ -36,6 +37,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessagePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
 
@@ -84,7 +86,7 @@ public class MiniServerPacketHandler implements PacketHandler {
     @Override
     public void handle(MiniConnection connection, ServerLoginStartPacket packet) {
         log.info("{} is trying to login", packet.getUsername());
-        connection.setUsername(packet.getUsername());
+        connection.initPlayer(packet.getUsername());
         if (server.isOfflineMode()) {
             join(connection);
         } else {
@@ -101,9 +103,16 @@ public class MiniServerPacketHandler implements PacketHandler {
         join(connection);
     }
 
+    @Override
+    public void handle(MiniConnection connection, ServerPlayPluginMessagePacket packet) {
+        Player player = connection.getPlayer();
+        player.setBrand(new String(packet.getData(), StandardCharsets.UTF_8));
+        log.info("Client brand of {} is {}", player.getName(), player.getBrand());
+    }
+
     private void join(MiniConnection connection) {
         ClientLoginSuccess loginSuccess = new ClientLoginSuccess();
-        loginSuccess.setUsername(connection.getUsername());
+        loginSuccess.setUsername(connection.getPlayer().getName());
         loginSuccess.setUuid(UUID.randomUUID());
         connection.sendPacket(loginSuccess);
         connection.setState(PacketState.PLAY);
@@ -124,7 +133,7 @@ public class MiniServerPacketHandler implements PacketHandler {
         connection.sendPacket(brand);
 
         ClientPlayPositionAndLook positionAndLook = new ClientPlayPositionAndLook();
-        positionAndLook.setPosition(new Position(0,0,0));
+        positionAndLook.setPosition(new Position(0, 0, 0));
         connection.sendPacket(positionAndLook);
     }
 }

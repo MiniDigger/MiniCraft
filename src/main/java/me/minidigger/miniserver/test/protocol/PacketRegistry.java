@@ -20,6 +20,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessagePacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
 
@@ -45,6 +46,9 @@ public class PacketRegistry {
         // login
         register(PacketDirection.TO_SERVER, PacketState.LOGIN, 0, ServerLoginStartPacket.class);
         register(PacketDirection.TO_SERVER, PacketState.LOGIN, 1, ServerLoginEncryptionResponse.class);
+
+        // play
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x0B, ServerPlayPluginMessagePacket.class);
 
         //
         // CLIENT

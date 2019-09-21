@@ -19,7 +19,7 @@ Nothing exciting here, just learning netty.
   - [ ] compression
 - [ ] Joining
   - [x] server brand (wooo https://i.imgur.com/VbbRwo1.png)
-  - [ ] client brand
+  - [x] client brand
   - [ ] server difficulty
   - [ ] player abilities
   - [ ] client settings

@@ -2,7 +2,7 @@ package me.minidigger.miniserver.test.api;
 
 public class Server {
 
-    private String name = "MiniServer";
+    private String name = "MiniServer \u26cf";
     private boolean offlineMode = true;
 
     public String getName() {
