@@ -12,12 +12,13 @@ Nothing exciting here, just learning netty.
 - [ ] Server List ping
   - [x] JSON Response
   - [ ] Favicon
-  - [ ] Online Status
+  - [x] Online Status
 - [ ] Login
   - [x] offline mode
   - [ ] encryption
   - [ ] compression
 - [ ] Joining
+- [ ] chat
 - [ ] Everything else
   
 ## Building
