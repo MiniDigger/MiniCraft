@@ -1,7 +1,8 @@
 package me.minidigger.miniserver.test.server;
 
-import com.google.gson.internal.$Gson$Preconditions;
-
+import net.kyori.nbt.CompoundTag;
+import net.kyori.nbt.ListTag;
+import net.kyori.nbt.LongArrayTag;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
@@ -9,29 +10,33 @@ import net.kyori.text.format.TextColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.desktop.PreferencesEvent;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import me.minidigger.miniserver.test.api.Player;
 import me.minidigger.miniserver.test.api.Server;
-import me.minidigger.miniserver.test.model.ChatPosition;
+import me.minidigger.miniserver.test.model.chunk.ChunkData;
+import me.minidigger.miniserver.test.model.chunk.ChunkPosition;
 import me.minidigger.miniserver.test.model.Dimension;
 import me.minidigger.miniserver.test.model.GameMode;
 import me.minidigger.miniserver.test.model.Key;
 import me.minidigger.miniserver.test.model.LevelType;
 import me.minidigger.miniserver.test.model.Position;
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
+import me.minidigger.miniserver.test.protocol.DataTypes;
+import me.minidigger.miniserver.test.protocol.PacketDirection;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketState;
-import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnectPacket;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
-import me.minidigger.miniserver.test.protocol.client.ClientPlayChatMessage;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayChunkData;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
@@ -59,6 +64,11 @@ public class MiniServerPacketHandler implements PacketHandler {
         pair = keyGen.generateKeyPair();
 
         this.server = server;
+    }
+
+    @Override
+    public PacketDirection getDirection() {
+        return PacketDirection.TO_SERVER;
     }
 
     @Override
@@ -149,6 +159,21 @@ public class MiniServerPacketHandler implements PacketHandler {
         brand.setChannel(Key.of("brand"));
         brand.setData(server.getName().getBytes(StandardCharsets.UTF_8));
         connection.sendPacket(brand);
+
+        ClientPlayChunkData chunkData = new ClientPlayChunkData();
+        chunkData.setChunkPosition(new ChunkPosition(0, 0));
+        chunkData.setFullChunk(true);
+
+        ChunkData chunk = new ChunkData();
+        chunkData.setChunkData(chunk);
+        chunkData.setBlockEntities(new ListTag());
+
+        for (int x = -3; x <= 3; x++) {
+            for (int z = -3; z <= 3; z++) {
+                chunkData.setChunkPosition(new ChunkPosition(x, z));
+                connection.sendPacket(chunkData);
+            }
+        }
 
         ClientPlayPositionAndLook positionAndLook = new ClientPlayPositionAndLook();
         positionAndLook.setPosition(new Position(0, 0, 0));

@@ -23,15 +23,20 @@ Nothing exciting here, just learning netty.
   - [ ] server difficulty
   - [ ] player abilities
   - [ ] client settings
-  - [ ] chunk data
   - [ ] spawn position
   - [x] position and look (we can see stuff, yee https://i.imgur.com/JgLatwe.png)
   - [ ] teleport confirm
 - [x] chat (woooo https://i.imgur.com/hiyP7TV.png)
-- [ ] Everything else
+- [ ] world stuff
+  - [x] sending empty chunks 
+  - [x] sending somewhat useable hardcoded stuff (https://i.imgur.com/RTrpYBS.png)
+  - [ ] implement palette
+  - [ ] reading a vanilla worlds
+  - [ ] reading from hypixels format
 - [ ] keep alive
   - [x] send it so we don't get disconnected
   - [ ] actually handle it properly
+- [ ] Everything else
   
 ### misc todo
 

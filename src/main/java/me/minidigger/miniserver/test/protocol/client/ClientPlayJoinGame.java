@@ -90,7 +90,7 @@ public class ClientPlayJoinGame extends Packet {
         buf.writeByte(maxplayers);
         DataTypes.writeString(levelType.getId(), buf);
         DataTypes.writeVarInt(viewDistance, buf);
-        DataTypes.writeBoolean(reducedDebugInfo, buf);
+        buf.writeBoolean(reducedDebugInfo);
     }
 
     @Override

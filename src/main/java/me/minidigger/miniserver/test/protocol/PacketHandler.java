@@ -10,6 +10,9 @@ import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
 import me.minidigger.miniserver.test.server.MiniConnection;
 
 public interface PacketHandler {
+
+    PacketDirection getDirection();
+
     void handle(MiniConnection connection, ServerHandshakePacket packet);
 
     void handle(MiniConnection connection, ServerStatusRequestPacket packet);
@@ -23,4 +26,5 @@ public interface PacketHandler {
     void handle(MiniConnection connection, ServerPlayPluginMessagePacket packet);
 
     void handle(MiniConnection connection, ServerPlayChatMessage packet);
+
 }

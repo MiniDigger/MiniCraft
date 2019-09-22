@@ -34,10 +34,10 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
 
         int packetId = DataTypes.readVarInt(in);
         log.info("got packet id {}, state is {}, bytes to read {}", packetId, connection.getState(), in.readableBytes());
-        Class<? extends Packet> packetClass = packetRegistry.getPacket(PacketDirection.TO_SERVER, connection.getState(), packetId);
+        Class<? extends Packet> packetClass = packetRegistry.getPacket(packetHandler.getDirection(), connection.getState(), packetId);
 
         if (packetClass == null) {
-            log.warn("Couldn't find a packet class for {}:{}:{}", PacketDirection.TO_SERVER, connection.getState(), packetId);
+            log.warn("Couldn't find a packet class for {}:{}:{}", packetHandler.getDirection(), connection.getState(), packetId);
             in.skipBytes(in.readableBytes());
             return;
         }

@@ -13,6 +13,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnectPacket
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayChatMessage;
+import me.minidigger.miniserver.test.protocol.client.ClientPlayChunkData;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayKeepAlive;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
@@ -71,6 +72,7 @@ public class PacketRegistry {
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x0E, ClientPlayChatMessage.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x18, ClientPlayPluginMessage.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x20, ClientPlayKeepAlive.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x21, ClientPlayChunkData.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x25, ClientPlayJoinGame.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x35, ClientPlayPositionAndLook.class);
     }

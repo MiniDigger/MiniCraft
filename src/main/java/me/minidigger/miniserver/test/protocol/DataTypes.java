@@ -1,11 +1,21 @@
 package me.minidigger.miniserver.test.protocol;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.kyori.nbt.CompoundTag;
+import net.kyori.nbt.ListTag;
+import net.kyori.nbt.Tag;
+import net.kyori.nbt.TagIO;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import me.minidigger.miniserver.test.model.Position;
 
 public class DataTypes {
@@ -117,15 +127,36 @@ public class DataTypes {
         buf.writeBytes(arr);
     }
 
-    public static boolean readBoolean(ByteBuf buf) {
-        byte b = buf.readByte();
-        if (b == 0x1) return true;
-        if (b == 0x0) return false;
-        throw new IllegalStateException("Can't parse boolean " + b);
+    public static long[] readLongArray(ByteBuf buf) {
+        int len = readVarInt(buf);
+        long[] data = new long[len];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = buf.readLong();
+        }
+        return data;
     }
 
-    public static void writeBoolean(boolean val, ByteBuf buf) {
-        buf.writeByte(val ? 0x1 : 0x0);
+    public static void writeLongArray(long[] arr, ByteBuf buf) {
+        writeVarInt(arr.length, buf);
+        for (long l : arr) {
+            buf.writeLong(l);
+        }
+    }
+
+    public static int[] readIntArray(ByteBuf buf) {
+        int len = readVarInt(buf);
+        int[] data = new int[len];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = buf.readInt();
+        }
+        return data;
+    }
+
+    public static void writeIntArray(int[] arr, ByteBuf buf) {
+        writeVarInt(arr.length, buf);
+        for (int l : arr) {
+            buf.writeInt(l);
+        }
     }
 
     public static void writePosition(Position position, ByteBuf buf) {
@@ -134,5 +165,22 @@ public class DataTypes {
         buf.writeDouble(position.getZ());
         buf.writeFloat(position.getYaw());
         buf.writeFloat(position.getPitch());
+    }
+
+    public static void writeNBT(CompoundTag tag, ByteBuf buf) {
+        @SuppressWarnings("UnstableApiUsage") ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        try {
+            TagIO.writeDataOutput(tag, out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        buf.writeBytes(out.toByteArray());
+    }
+
+    public static void writeNBTList(ListTag listTag, ByteBuf buf) {
+        DataTypes.writeVarInt(listTag.size(), buf);
+        for (Tag tag : listTag) {
+            DataTypes.writeNBT((CompoundTag) tag, buf);
+        }
     }
 }
