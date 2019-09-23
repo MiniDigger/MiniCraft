@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.pipeline;
+package me.minidigger.miniserver.test.netty.pipeline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

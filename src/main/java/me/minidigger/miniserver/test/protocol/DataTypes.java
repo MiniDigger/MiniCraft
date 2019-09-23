@@ -4,11 +4,15 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import net.kyori.nbt.CompoundTag;
 import net.kyori.nbt.ListTag;
 import net.kyori.nbt.Tag;
 import net.kyori.nbt.TagIO;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,6 +24,8 @@ import me.minidigger.miniserver.test.model.BlockPosition;
 import me.minidigger.miniserver.test.model.Position;
 
 public class DataTypes {
+
+    private static final Logger log = LoggerFactory.getLogger(DataTypes.class);
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -109,7 +115,12 @@ public class DataTypes {
     public static <T> T readJSON(ByteBuf buf, Class<T> clazz) {
         String string = readString(buf);
 
-        return gson.fromJson(string, clazz);
+        try {
+            return gson.fromJson(string, clazz);
+        } catch (JsonSyntaxException e) {
+            log.error("Error while parsing json {}: {}", string, e);
+            return null;
+        }
     }
 
     public static void writeJSON(Object object, ByteBuf buf) {

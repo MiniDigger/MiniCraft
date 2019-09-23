@@ -17,7 +17,7 @@
     </Appenders>
     <Loggers>
         <Logger name="io.netty" level="info" />
-        <Logger name="me.minidigger" level="info" />
+        <Logger name="me.minidigger" level="debug" />
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>

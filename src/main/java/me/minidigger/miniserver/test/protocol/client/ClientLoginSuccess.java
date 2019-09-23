@@ -7,8 +7,8 @@ import java.util.UUID;
 import io.netty.buffer.ByteBuf;
 import me.minidigger.miniserver.test.protocol.DataTypes;
 import me.minidigger.miniserver.test.protocol.Packet;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public class ClientLoginSuccess extends Packet {
 

@@ -4,8 +4,8 @@ import com.google.common.base.MoreObjects;
 
 import io.netty.buffer.ByteBuf;
 import me.minidigger.miniserver.test.protocol.Packet;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public class ServerStatusPing extends Packet {
 
@@ -22,7 +22,7 @@ public class ServerStatusPing extends Packet {
 
     @Override
     public void toWire(ByteBuf buf) {
-
+        buf.writeLong(this.payload);
     }
 
     @Override

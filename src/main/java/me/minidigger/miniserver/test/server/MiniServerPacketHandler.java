@@ -25,8 +25,8 @@ import me.minidigger.miniserver.test.model.Key;
 import me.minidigger.miniserver.test.model.LevelType;
 import me.minidigger.miniserver.test.model.Position;
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 import me.minidigger.miniserver.test.protocol.PacketDirection;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketState;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
@@ -36,6 +36,7 @@ import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusPong;
 import me.minidigger.miniserver.test.protocol.client.ClientStatusResponse;
+import me.minidigger.miniserver.test.protocol.handler.ServerPacketHandler;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshake;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStart;
@@ -52,7 +53,7 @@ import me.minidigger.miniserver.test.protocol.server.ServerPlayTeleportConfirm;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPing;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequest;
 
-public class MiniServerPacketHandler implements PacketHandler {
+public class MiniServerPacketHandler extends ServerPacketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MiniServerPacketHandler.class);
 

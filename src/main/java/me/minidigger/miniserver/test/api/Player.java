@@ -7,10 +7,9 @@ import net.kyori.text.Component;
 import java.util.UUID;
 
 import me.minidigger.miniserver.test.model.ChatPosition;
-import me.minidigger.miniserver.test.protocol.Packet;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayChatMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayKeepAlive;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public class Player {
 

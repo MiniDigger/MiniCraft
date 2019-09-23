@@ -1,23 +1,25 @@
-package me.minidigger.miniserver.test.server;
+package me.minidigger.miniserver.test.netty.pipeline;
+
+import java.util.function.Consumer;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
+import me.minidigger.miniserver.test.netty.MiniChannelHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketRegistry;
-import me.minidigger.miniserver.test.pipeline.MiniPacketDecoder;
-import me.minidigger.miniserver.test.pipeline.MiniPacketEncoder;
-import me.minidigger.miniserver.test.pipeline.MiniPacketLengthDecoder;
-import me.minidigger.miniserver.test.pipeline.MiniPacketLengthEncoder;
 
-public class MiniServerInitializer extends ChannelInitializer<SocketChannel> {
+public class MiniPipeline extends ChannelInitializer<SocketChannel> {
 
     private final PacketRegistry packetRegistry;
     private final PacketHandler packetHandler;
+    private final Consumer<MiniConnection> connectCallback;
 
-    public MiniServerInitializer(PacketRegistry packetRegistry, PacketHandler packetHandler) {
+    public MiniPipeline(PacketRegistry packetRegistry, PacketHandler packetHandler, Consumer<MiniConnection> connectCallback) {
         this.packetRegistry = packetRegistry;
         this.packetHandler = packetHandler;
+        this.connectCallback = connectCallback;
     }
 
     @Override
@@ -30,6 +32,6 @@ public class MiniServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("lengthEncoder", new MiniPacketLengthEncoder());
         pipeline.addLast("encoder", new MiniPacketEncoder(packetRegistry));
 
-        pipeline.addLast("handler", new MiniServerHandler());
+        pipeline.addLast("handler", new MiniChannelHandler(connectCallback));
     }
 }

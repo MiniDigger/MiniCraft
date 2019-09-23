@@ -1,6 +1,28 @@
 package me.minidigger.miniserver.test.protocol;
 
+import me.minidigger.miniserver.test.model.BlockFace;
+
 public enum PacketState {
 
-    LOGIN, STATUS, HANDSHAKE, PLAY;
+    HANDSHAKE(0), STATUS(1), LOGIN(2), PLAY(3);
+
+    private int id;
+
+    PacketState(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static PacketState fromId(int id) {
+        for (PacketState value : values()) {
+            if (value.id == id) {
+                return value;
+            }
+        }
+
+        throw new IllegalArgumentException("Unknown id " + id);
+    }
 }

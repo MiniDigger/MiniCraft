@@ -1,5 +1,8 @@
-package me.minidigger.miniserver.test.protocol;
+package me.minidigger.miniserver.test.protocol.handler;
 
+import me.minidigger.miniserver.test.protocol.PacketDirection;
+import me.minidigger.miniserver.test.protocol.client.ClientStatusPong;
+import me.minidigger.miniserver.test.protocol.client.ClientStatusResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerHandshake;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginStart;
@@ -15,11 +18,18 @@ import me.minidigger.miniserver.test.protocol.server.ServerPlayPositionAndLook;
 import me.minidigger.miniserver.test.protocol.server.ServerPlayTeleportConfirm;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusPing;
 import me.minidigger.miniserver.test.protocol.server.ServerStatusRequest;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public interface PacketHandler {
 
     PacketDirection getDirection();
+
+    // client
+    void handle(MiniConnection connection, ClientStatusResponse clientStatusResponse);
+
+    void handle(MiniConnection connection, ClientStatusPong clientStatusPong);
+
+    // server
 
     void handle(MiniConnection connection, ServerHandshake packet);
 

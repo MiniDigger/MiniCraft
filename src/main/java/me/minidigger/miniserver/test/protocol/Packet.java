@@ -1,7 +1,8 @@
 package me.minidigger.miniserver.test.protocol;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public abstract class Packet {
 

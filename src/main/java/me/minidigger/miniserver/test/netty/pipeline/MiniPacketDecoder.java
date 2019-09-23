@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.pipeline;
+package me.minidigger.miniserver.test.netty.pipeline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,13 +8,13 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import me.minidigger.miniserver.test.netty.MiniChannelHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 import me.minidigger.miniserver.test.protocol.DataTypes;
 import me.minidigger.miniserver.test.protocol.Packet;
 import me.minidigger.miniserver.test.protocol.PacketDirection;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketRegistry;
-import me.minidigger.miniserver.test.server.MiniConnection;
-import me.minidigger.miniserver.test.server.MiniServerHandler;
 
 public class MiniPacketDecoder extends ByteToMessageDecoder {
 
@@ -30,7 +30,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        MiniConnection connection = ctx.pipeline().get(MiniServerHandler.class).getConnection();
+        MiniConnection connection = ctx.pipeline().get(MiniChannelHandler.class).getConnection();
 
         int packetId = DataTypes.readVarInt(in);
         log.debug("got packet id {}, state is {}, bytes to read {}", packetId, connection.getState(), in.readableBytes());
@@ -43,7 +43,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
         }
 
         Packet packet = (Packet) packetClass.getConstructors()[0].newInstance();
-        packet.setDirection(PacketDirection.TO_SERVER);
+        packet.setDirection(packetHandler.getDirection());
         packet.setState(connection.getState());
         packet.setId(packetId);
 

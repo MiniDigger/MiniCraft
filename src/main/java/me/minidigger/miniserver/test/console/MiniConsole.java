@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.server;
+package me.minidigger.miniserver.test.console;
 
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
 
@@ -7,9 +7,9 @@ import org.jline.reader.LineReaderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MiniServerConsole extends SimpleTerminalConsole {
+public class MiniConsole extends SimpleTerminalConsole {
 
-    private static final Logger log = LoggerFactory.getLogger(MiniServerConsole.class);
+    private static final Logger log = LoggerFactory.getLogger(MiniConsole.class);
 
     @Override
     public void start() {
@@ -41,7 +41,7 @@ public class MiniServerConsole extends SimpleTerminalConsole {
     protected LineReader buildReader(LineReaderBuilder builder) {
         return super.buildReader(builder
                 .appName("MiniServer")
-                .completer(new MiniServerCommandCompleter())
+                .completer(new MiniCommandCompleter())
         );
     }
 }

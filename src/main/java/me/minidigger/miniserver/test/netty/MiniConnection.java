@@ -1,4 +1,4 @@
-package me.minidigger.miniserver.test.server;
+package me.minidigger.miniserver.test.netty;
 
 import java.net.SocketAddress;
 

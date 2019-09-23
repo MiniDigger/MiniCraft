@@ -1,23 +1,33 @@
-package me.minidigger.miniserver.test.server;
+package me.minidigger.miniserver.test.netty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.minidigger.miniserver.test.protocol.Packet;
 
-public class MiniServerHandler extends SimpleChannelInboundHandler<Packet> {
+public class MiniChannelHandler extends SimpleChannelInboundHandler<Packet> {
 
-    private static final Logger log = LoggerFactory.getLogger(MiniServerHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MiniChannelHandler.class);
 
     private MiniConnection connection;
+    private Consumer<MiniConnection> connectCallback;
+
+    public MiniChannelHandler(Consumer<MiniConnection> connectCallback) {
+        this.connectCallback = connectCallback;
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("[+] Channel connected: {}", ctx.channel().remoteAddress());
 
         this.connection = new MiniConnection(ctx);
+        if (this.connectCallback != null) {
+            this.connectCallback.accept(this.connection);
+        }
     }
 
     @Override
@@ -29,7 +39,11 @@ public class MiniServerHandler extends SimpleChannelInboundHandler<Packet> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("Exception caught, closing channel.", cause);
+        if ("Connection reset".equals(cause.getMessage())) {
+            log.error("{}: Connection reset.", this.connection.getRemoteAddress());
+        } else {
+            log.error("{}: Exception caught, closing channel.", this.connection.getRemoteAddress(), cause);
+        }
 
         this.connection = null;
 

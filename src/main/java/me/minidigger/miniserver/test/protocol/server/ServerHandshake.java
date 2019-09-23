@@ -5,9 +5,9 @@ import com.google.common.base.MoreObjects;
 import io.netty.buffer.ByteBuf;
 import me.minidigger.miniserver.test.protocol.DataTypes;
 import me.minidigger.miniserver.test.protocol.Packet;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketState;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public class ServerHandshake extends Packet {
 
@@ -32,9 +32,28 @@ public class ServerHandshake extends Packet {
         return nextState;
     }
 
+    public void setProtocolVersion(int protocolVersion) {
+        this.protocolVersion = protocolVersion;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
+    }
+
+    public void setServerPort(short serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public void setNextState(PacketState nextState) {
+        this.nextState = nextState;
+    }
+
     @Override
     public void toWire(ByteBuf buf) {
-
+        DataTypes.writeVarInt(this.protocolVersion, buf);
+        DataTypes.writeString(this.serverAddress, buf);
+        DataTypes.writeShort(this.serverPort, buf);
+        DataTypes.writeVarInt(this.getNextState().getId(), buf);
     }
 
     @Override
@@ -42,12 +61,7 @@ public class ServerHandshake extends Packet {
         this.protocolVersion = DataTypes.readVarInt(buf);
         this.serverAddress = DataTypes.readString(buf);
         this.serverPort = DataTypes.readShort(buf);
-        int nextState = DataTypes.readVarInt(buf);
-        if (nextState == 1) {
-            this.nextState = PacketState.STATUS;
-        } else if (nextState == 2) {
-            this.nextState = PacketState.LOGIN;
-        }
+        this.nextState = PacketState.fromId(DataTypes.readVarInt(buf));
     }
 
     @Override

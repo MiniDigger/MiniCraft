@@ -6,8 +6,8 @@ import io.netty.buffer.ByteBuf;
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
 import me.minidigger.miniserver.test.protocol.DataTypes;
 import me.minidigger.miniserver.test.protocol.Packet;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public class ClientStatusResponse extends Packet {
 
@@ -23,7 +23,7 @@ public class ClientStatusResponse extends Packet {
 
     @Override
     public void handle(MiniConnection connection, PacketHandler handler) {
-
+handler.handle(connection,this);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ClientStatusResponse extends Packet {
 
     @Override
     public void fromWire(ByteBuf buf) {
-
+        this.response = DataTypes.readJSON(buf, ServerStatusResponse.class);
     }
 
     @Override

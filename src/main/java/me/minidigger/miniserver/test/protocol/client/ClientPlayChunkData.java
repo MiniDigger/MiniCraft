@@ -2,20 +2,15 @@ package me.minidigger.miniserver.test.protocol.client;
 
 import com.google.common.base.MoreObjects;
 
-import net.kyori.nbt.CompoundTag;
 import net.kyori.nbt.ListTag;
 
-import java.nio.charset.StandardCharsets;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import me.minidigger.miniserver.test.GameConstants;
 import me.minidigger.miniserver.test.model.chunk.ChunkData;
 import me.minidigger.miniserver.test.model.chunk.ChunkPosition;
 import me.minidigger.miniserver.test.protocol.DataTypes;
 import me.minidigger.miniserver.test.protocol.Packet;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
-import me.minidigger.miniserver.test.server.MiniConnection;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
+import me.minidigger.miniserver.test.netty.MiniConnection;
 
 public class ClientPlayChunkData extends Packet {
 

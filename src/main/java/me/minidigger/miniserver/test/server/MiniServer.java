@@ -1,7 +1,5 @@
 package me.minidigger.miniserver.test.server;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -9,7 +7,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import me.minidigger.miniserver.test.api.Server;
-import me.minidigger.miniserver.test.protocol.PacketHandler;
+import me.minidigger.miniserver.test.console.MiniConsole;
+import me.minidigger.miniserver.test.netty.pipeline.MiniPipeline;
+import me.minidigger.miniserver.test.protocol.handler.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketRegistry;
 
 public class MiniServer {
@@ -30,7 +30,7 @@ public class MiniServer {
 
         Server server = new Server();
         server.start();
-        MiniServerConsole serverConsole = new MiniServerConsole();
+        MiniConsole serverConsole = new MiniConsole();
         serverConsole.start();
 
         PacketHandler packetHandler = new MiniServerPacketHandler(server);
@@ -40,9 +40,9 @@ public class MiniServer {
 
         try {
             ServerBootstrap bootstrap = new ServerBootstrap()
-                    .group(bossGroup,workerGroup)
+                    .group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new MiniServerInitializer(packetRegistry, packetHandler));
+                    .childHandler(new MiniPipeline(packetRegistry, packetHandler, null));
 
             bootstrap.bind(port).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
