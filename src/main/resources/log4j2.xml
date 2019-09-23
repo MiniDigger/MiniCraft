@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="pattern">%cyan{[%d{HH:mm:ss}]} %highlight{[%-5.5level]} %green{[%-20.20thread]} %highlight{[%-25.25c{1.}]: %msg%n}</Property>
+        <Property name="pattern">%cyan{[%d{HH:mm:ss}]} %highlight{[%-5.5level]} %white{[%-20.20thread]} %highlight{[%-25.25c{1.}]: %msg%n}</Property>
     </Properties>
     <Appenders>
         <TerminalConsole name="Console">
@@ -17,7 +17,7 @@
     </Appenders>
     <Loggers>
         <Logger name="io.netty" level="info" />
-        <Logger name="me.minidigger" level="trace" />
+        <Logger name="me.minidigger" level="info" />
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>

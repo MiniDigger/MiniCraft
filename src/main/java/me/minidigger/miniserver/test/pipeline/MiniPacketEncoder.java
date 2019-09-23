@@ -23,7 +23,7 @@ public class MiniPacketEncoder extends MessageToByteEncoder<Packet> {
     @Override
     protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
         packetRegistry.fillInfo(packet);
-        log.info("Writing packet {}/{}: {}", packet.getState(), packet.getId(), packet);
+        log.debug("Writing packet {}/{}: {}", packet.getState(), packet.getId(), packet);
 
         DataTypes.writeVarInt(packet.getId(), out);
         packet.toWire(out);

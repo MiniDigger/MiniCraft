@@ -1,8 +1,6 @@
 package me.minidigger.miniserver.test.server;
 
-import net.kyori.nbt.CompoundTag;
 import net.kyori.nbt.ListTag;
-import net.kyori.nbt.LongArrayTag;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
@@ -14,12 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import me.minidigger.miniserver.test.api.Player;
 import me.minidigger.miniserver.test.api.Server;
 import me.minidigger.miniserver.test.model.chunk.ChunkData;
@@ -30,7 +25,6 @@ import me.minidigger.miniserver.test.model.Key;
 import me.minidigger.miniserver.test.model.LevelType;
 import me.minidigger.miniserver.test.model.Position;
 import me.minidigger.miniserver.test.model.ServerStatusResponse;
-import me.minidigger.miniserver.test.protocol.DataTypes;
 import me.minidigger.miniserver.test.protocol.PacketDirection;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketState;
@@ -40,15 +34,23 @@ import me.minidigger.miniserver.test.protocol.client.ClientPlayChunkData;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
-import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
-import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
-import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
+import me.minidigger.miniserver.test.protocol.client.ClientStatusPong;
+import me.minidigger.miniserver.test.protocol.client.ClientStatusResponse;
+import me.minidigger.miniserver.test.protocol.server.ServerHandshake;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
-import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerLoginStart;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayBlockPlace;
 import me.minidigger.miniserver.test.protocol.server.ServerPlayChatMessage;
-import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessagePacket;
-import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
-import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayClientSettings;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayKeepAlive;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayLook;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPlayerAbilities;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessage;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPosition;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPositionAndLook;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayTeleportConfirm;
+import me.minidigger.miniserver.test.protocol.server.ServerStatusPing;
+import me.minidigger.miniserver.test.protocol.server.ServerStatusRequest;
 
 public class MiniServerPacketHandler implements PacketHandler {
 
@@ -72,13 +74,13 @@ public class MiniServerPacketHandler implements PacketHandler {
     }
 
     @Override
-    public void handle(MiniConnection connection, ServerHandshakePacket packet) {
+    public void handle(MiniConnection connection, ServerHandshake packet) {
         connection.setState(packet.getNextState());
-        log.info("Advancing state to {}", packet.getNextState());
+        log.debug("Advancing state to {}", packet.getNextState());
     }
 
     @Override
-    public void handle(MiniConnection connection, ServerStatusRequestPacket packet) {
+    public void handle(MiniConnection connection, ServerStatusRequest packet) {
         ServerStatusResponse response = new ServerStatusResponse(
                 new ServerStatusResponse.Version("HeyJA", 498),
                 new ServerStatusResponse.Players(255, 0, List.of(
@@ -86,21 +88,21 @@ public class MiniServerPacketHandler implements PacketHandler {
                 TextComponent.builder("Test.").color(TextColor.RED).append(" Test2").color(TextColor.GREEN).build(),
                 server.getServerIcon());
 
-        ClientStatusResponsePacket responsePacket = new ClientStatusResponsePacket();
+        ClientStatusResponse responsePacket = new ClientStatusResponse();
         responsePacket.setResponse(response);
 
         connection.sendPacket(responsePacket);
     }
 
     @Override
-    public void handle(MiniConnection connection, ServerStatusPingPacket packet) {
-        ClientStatusPongPacket response = new ClientStatusPongPacket();
+    public void handle(MiniConnection connection, ServerStatusPing packet) {
+        ClientStatusPong response = new ClientStatusPong();
         response.setPayload(packet.getPayload());
         connection.sendPacket(response);
     }
 
     @Override
-    public void handle(MiniConnection connection, ServerLoginStartPacket packet) {
+    public void handle(MiniConnection connection, ServerLoginStart packet) {
         log.info("{} is trying to login", packet.getUsername());
         connection.initPlayer(packet.getUsername());
         if (server.isOfflineMode()) {
@@ -120,7 +122,7 @@ public class MiniServerPacketHandler implements PacketHandler {
     }
 
     @Override
-    public void handle(MiniConnection connection, ServerPlayPluginMessagePacket packet) {
+    public void handle(MiniConnection connection, ServerPlayPluginMessage packet) {
         Player player = connection.getPlayer();
         player.setBrand(new String(packet.getData(), StandardCharsets.UTF_8));
         log.info("Client brand of {} is {}", player.getName(), player.getBrand());
@@ -136,6 +138,46 @@ public class MiniServerPacketHandler implements PacketHandler {
         for (Player player : server.getPlayers()) {
             player.sendMessage(msg);
         }
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayKeepAlive serverPlayKeepAlive) {
+
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayClientSettings serverPlayClientSettings) {
+        log.info("Language of {} is {}", connection.getPlayer().getName(), serverPlayClientSettings.getLocale());
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayTeleportConfirm serverPlayTeleportConfirm) {
+
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayPositionAndLook serverPlayPositionAndLook) {
+
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayPosition serverPlayPosition) {
+
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayLook serverPlayLook) {
+
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayPlayerAbilities serverPlayPlayerAbilities) {
+
+    }
+
+    @Override
+    public void handle(MiniConnection connection, ServerPlayBlockPlace serverPlayBlockPlace) {
+        log.info("{} placed block at {}", connection.getPlayer().getName(), serverPlayBlockPlace.getPosition());
     }
 
     private void join(MiniConnection connection) {

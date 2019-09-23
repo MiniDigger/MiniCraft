@@ -22,7 +22,7 @@ public class MiniServerHandler extends SimpleChannelInboundHandler<Packet> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.info("[-} Channel disconnected: {}", ctx.channel().remoteAddress());
+        log.info("[-] Channel disconnected: {}", ctx.channel().remoteAddress());
 
         this.connection = null;
     }

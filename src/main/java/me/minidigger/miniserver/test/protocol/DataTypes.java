@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import me.minidigger.miniserver.test.model.BlockPosition;
 import me.minidigger.miniserver.test.model.Position;
 
 public class DataTypes {
@@ -159,12 +160,31 @@ public class DataTypes {
         }
     }
 
-    public static void writePosition(Position position, ByteBuf buf) {
+    public static Position readPosition(boolean full, ByteBuf buf) {
+        if (full) {
+            return new Position(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat());
+        } else {
+            return new Position(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        }
+    }
+
+    public static void writePosition(boolean full, Position position, ByteBuf buf) {
         buf.writeDouble(position.getX());
         buf.writeDouble(position.getY());
         buf.writeDouble(position.getZ());
-        buf.writeFloat(position.getYaw());
-        buf.writeFloat(position.getPitch());
+        if (full) {
+            buf.writeFloat(position.getYaw());
+            buf.writeFloat(position.getPitch());
+        }
+    }
+
+    public static BlockPosition readBlockPosition(ByteBuf buf) {
+        long val = buf.readLong();
+        return new BlockPosition((int) (val >> 38), (int) (val & 0xFFF), (int) (val << 26 >> 38));
+    }
+
+    public static void writeBlockPosition(BlockPosition position, ByteBuf buf) {
+        buf.writeLong((((long) (position.getX()) & 0x3FFFFFF) << 38) | ((position.getZ() & 0x3FFFFFF) << 12) | (position.getY() & 0xFFF));
     }
 
     public static void writeNBT(CompoundTag tag, ByteBuf buf) {

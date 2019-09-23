@@ -33,7 +33,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
         MiniConnection connection = ctx.pipeline().get(MiniServerHandler.class).getConnection();
 
         int packetId = DataTypes.readVarInt(in);
-        log.info("got packet id {}, state is {}, bytes to read {}", packetId, connection.getState(), in.readableBytes());
+        log.debug("got packet id {}, state is {}, bytes to read {}", packetId, connection.getState(), in.readableBytes());
         Class<? extends Packet> packetClass = packetRegistry.getPacket(packetHandler.getDirection(), connection.getState(), packetId);
 
         if (packetClass == null) {
@@ -49,13 +49,13 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
 
         packet.fromWire(in);
 
-        log.info("packet is {}", packet);
+        log.debug("packet is {}", packet);
 
         packet.handle(connection, packetHandler);
 
         if (in.readableBytes() > 0) {
-            log.warn("Didn't fully read packet! {} bytes to go", in.readableBytes());
-            ctx.close();
+            log.warn("Didn't fully read packet {}! {} bytes to go", packet.getClass().getSimpleName(), in.readableBytes());
+            in.skipBytes(in.readableBytes());
         }
     }
 }

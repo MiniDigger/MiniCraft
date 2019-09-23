@@ -35,7 +35,7 @@ public class ClientPlayPositionAndLook extends Packet {
 
     @Override
     public void toWire(ByteBuf buf) {
-        DataTypes.writePosition(position, buf);
+        DataTypes.writePosition(true, position, buf);
         buf.writeByte(0x0); // relative flag, ignored for now
         DataTypes.writeVarInt(-1, buf); // teleport id, ignored for now
     }

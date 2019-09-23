@@ -1,13 +1,16 @@
 package me.minidigger.miniserver.test.protocol.server;
 
-import com.google.common.base.MoreObjects;
-
 import io.netty.buffer.ByteBuf;
 import me.minidigger.miniserver.test.protocol.Packet;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.server.MiniConnection;
 
-public class ServerStatusRequestPacket extends Packet {
+public class ServerPlayPlayerAbilities extends Packet {
+
+    private byte flags;
+    private float flyingSpeed;
+    private float walkingSpeed;
+
     @Override
     public void handle(MiniConnection connection, PacketHandler handler) {
         handler.handle(connection, this);
@@ -20,12 +23,13 @@ public class ServerStatusRequestPacket extends Packet {
 
     @Override
     public void fromWire(ByteBuf buf) {
-        // no data
+        this.flags = buf.readByte();
+        this.flyingSpeed = buf.readFloat();
+        this.walkingSpeed = buf.readFloat();
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .toString();
+        return null;
     }
 }

@@ -15,7 +15,7 @@ public class MiniPacketLengthEncoder extends MessageToByteEncoder<ByteBuf> {
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
         DataTypes.writeVarInt(msg.readableBytes(), out);
-        log.info("Wrote packet with size {}", msg.readableBytes());
+        log.debug("Wrote packet with size {}", msg.readableBytes());
         out.writeBytes(msg);
     }
 }

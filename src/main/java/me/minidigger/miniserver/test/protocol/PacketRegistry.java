@@ -7,9 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
-import java.util.Optional;
 
-import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnectPacket;
+import me.minidigger.miniserver.test.protocol.client.ClientLoginDisconnect;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.miniserver.test.protocol.client.ClientLoginSuccess;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayChatMessage;
@@ -18,15 +17,23 @@ import me.minidigger.miniserver.test.protocol.client.ClientPlayJoinGame;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayKeepAlive;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.miniserver.test.protocol.client.ClientPlayPositionAndLook;
-import me.minidigger.miniserver.test.protocol.client.ClientStatusPongPacket;
-import me.minidigger.miniserver.test.protocol.client.ClientStatusResponsePacket;
-import me.minidigger.miniserver.test.protocol.server.ServerHandshakePacket;
+import me.minidigger.miniserver.test.protocol.client.ClientStatusPong;
+import me.minidigger.miniserver.test.protocol.client.ClientStatusResponse;
+import me.minidigger.miniserver.test.protocol.server.ServerHandshake;
 import me.minidigger.miniserver.test.protocol.server.ServerLoginEncryptionResponse;
-import me.minidigger.miniserver.test.protocol.server.ServerLoginStartPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerLoginStart;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayBlockPlace;
 import me.minidigger.miniserver.test.protocol.server.ServerPlayChatMessage;
-import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessagePacket;
-import me.minidigger.miniserver.test.protocol.server.ServerStatusPingPacket;
-import me.minidigger.miniserver.test.protocol.server.ServerStatusRequestPacket;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayClientSettings;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayKeepAlive;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayLook;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPlayerAbilities;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPluginMessage;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPosition;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayPositionAndLook;
+import me.minidigger.miniserver.test.protocol.server.ServerPlayTeleportConfirm;
+import me.minidigger.miniserver.test.protocol.server.ServerStatusPing;
+import me.minidigger.miniserver.test.protocol.server.ServerStatusRequest;
 
 public class PacketRegistry {
 
@@ -41,30 +48,38 @@ public class PacketRegistry {
         //
 
         // handshake
-        register(PacketDirection.TO_SERVER, PacketState.HANDSHAKE, 0, ServerHandshakePacket.class);
+        register(PacketDirection.TO_SERVER, PacketState.HANDSHAKE, 0, ServerHandshake.class);
 
         // status
-        register(PacketDirection.TO_SERVER, PacketState.STATUS, 0, ServerStatusRequestPacket.class);
-        register(PacketDirection.TO_SERVER, PacketState.STATUS, 1, ServerStatusPingPacket.class);
+        register(PacketDirection.TO_SERVER, PacketState.STATUS, 0, ServerStatusRequest.class);
+        register(PacketDirection.TO_SERVER, PacketState.STATUS, 1, ServerStatusPing.class);
 
         // login
-        register(PacketDirection.TO_SERVER, PacketState.LOGIN, 0, ServerLoginStartPacket.class);
+        register(PacketDirection.TO_SERVER, PacketState.LOGIN, 0, ServerLoginStart.class);
         register(PacketDirection.TO_SERVER, PacketState.LOGIN, 1, ServerLoginEncryptionResponse.class);
 
         // play
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x00, ServerPlayTeleportConfirm.class);
         register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x03, ServerPlayChatMessage.class);
-        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x0B, ServerPlayPluginMessagePacket.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x05, ServerPlayClientSettings.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x0B, ServerPlayPluginMessage.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x0F, ServerPlayKeepAlive.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x11, ServerPlayPosition.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x12, ServerPlayPositionAndLook.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x13, ServerPlayLook.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x19, ServerPlayPlayerAbilities.class);
+        register(PacketDirection.TO_SERVER, PacketState.PLAY, 0x2C, ServerPlayBlockPlace.class);
 
         //
         // CLIENT
         //
 
         // status
-        register(PacketDirection.TO_CLIENT, PacketState.STATUS, 0, ClientStatusResponsePacket.class);
-        register(PacketDirection.TO_CLIENT, PacketState.STATUS, 1, ClientStatusPongPacket.class);
+        register(PacketDirection.TO_CLIENT, PacketState.STATUS, 0, ClientStatusResponse.class);
+        register(PacketDirection.TO_CLIENT, PacketState.STATUS, 1, ClientStatusPong.class);
 
         // login
-        register(PacketDirection.TO_CLIENT, PacketState.LOGIN, 0, ClientLoginDisconnectPacket.class);
+        register(PacketDirection.TO_CLIENT, PacketState.LOGIN, 0, ClientLoginDisconnect.class);
         register(PacketDirection.TO_CLIENT, PacketState.LOGIN, 1, ClientLoginEncryptionRequest.class);
         register(PacketDirection.TO_CLIENT, PacketState.LOGIN, 2, ClientLoginSuccess.class);
 

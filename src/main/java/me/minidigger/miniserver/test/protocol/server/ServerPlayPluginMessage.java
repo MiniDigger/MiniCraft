@@ -9,7 +9,7 @@ import me.minidigger.miniserver.test.protocol.Packet;
 import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.server.MiniConnection;
 
-public class ServerPlayPluginMessagePacket extends Packet {
+public class ServerPlayPluginMessage extends Packet {
 
     private Key channel;
     private byte[] data;

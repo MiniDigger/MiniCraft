@@ -9,7 +9,7 @@ import me.minidigger.miniserver.test.protocol.PacketHandler;
 import me.minidigger.miniserver.test.protocol.PacketState;
 import me.minidigger.miniserver.test.server.MiniConnection;
 
-public class ServerHandshakePacket extends Packet {
+public class ServerHandshake extends Packet {
 
     private int protocolVersion;
     private String serverAddress;
