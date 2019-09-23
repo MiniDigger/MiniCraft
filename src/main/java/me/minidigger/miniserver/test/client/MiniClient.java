@@ -24,7 +24,7 @@ public class MiniClient {
     }
 
     public static void main(String[] args) {
-        new MiniClient("play.dyescape.com", 25565).run();
+        new MiniClient("localhost", 25565).run();
     }
 
     public void run() {

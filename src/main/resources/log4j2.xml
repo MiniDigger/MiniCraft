@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="pattern">%cyan{[%d{HH:mm:ss}]} %highlight{[%-5.5level]} %white{[%-20.20thread]} %highlight{[%-25.25c{1.}]: %msg%n}</Property>
+        <Property name="console-pattern">%cyan{[%d{HH:mm:ss}]} %highlight{[%-5.5level]} %white{[%-25.25thread]} %highlight{[%-30.30c{1.}]: %msg%n}</Property>
+        <Property name="file-pattern">[%d{HH:mm:ss}] [%-5.5level] [%-25.25thread] [%-30.30c{1.}]: %msg%n</Property>
     </Properties>
     <Appenders>
         <TerminalConsole name="Console">
-            <PatternLayout pattern="${sys:pattern}" disableAnsi="false"/>
+            <PatternLayout pattern="${sys:console-pattern}" disableAnsi="false"/>
         </TerminalConsole>
         <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
-            <PatternLayout pattern="${sys:pattern}"/>
+            <PatternLayout pattern="${sys:file-pattern}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
                 <OnStartupTriggeringPolicy/>
