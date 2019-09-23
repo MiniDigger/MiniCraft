@@ -30,6 +30,8 @@ public class MiniServer {
 
         Server server = new Server();
         server.start();
+        MiniServerConsole serverConsole = new MiniServerConsole();
+        serverConsole.start();
 
         PacketHandler packetHandler = new MiniServerPacketHandler(server);
 
