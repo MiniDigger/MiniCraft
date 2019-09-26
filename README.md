@@ -1,6 +1,6 @@
-# MiniServer
+# MiniCraft
 
-Clean room implementation of the minecraft server using java and netty.
+Clean room implementation of the minecraft server (and client!) using java and netty.
 
 Nothing exciting here, just learning netty.
 
