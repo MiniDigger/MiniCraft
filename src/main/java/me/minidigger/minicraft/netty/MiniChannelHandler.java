@@ -7,9 +7,9 @@ import java.util.function.Consumer;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import me.minidigger.minicraft.protocol.Packet;
+import me.minidigger.minicraft.protocol.MiniPacket;
 
-public class MiniChannelHandler extends SimpleChannelInboundHandler<Packet> {
+public class MiniChannelHandler extends SimpleChannelInboundHandler<MiniPacket> {
 
     private static final Logger log = LoggerFactory.getLogger(MiniChannelHandler.class);
 
@@ -51,7 +51,7 @@ public class MiniChannelHandler extends SimpleChannelInboundHandler<Packet> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Packet msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, MiniPacket msg) throws Exception {
         log.info("[Packet] {}", msg);
     }
 

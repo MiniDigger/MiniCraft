@@ -4,7 +4,7 @@ import java.net.SocketAddress;
 
 import io.netty.channel.ChannelHandlerContext;
 import me.minidigger.minicraft.api.Player;
-import me.minidigger.minicraft.protocol.Packet;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.protocol.PacketState;
 
 public class MiniConnection {
@@ -30,7 +30,7 @@ public class MiniConnection {
         return ctx.channel().remoteAddress();
     }
 
-    public void sendPacket(Packet packet) {
+    public void sendPacket(MiniPacket packet) {
         ctx.channel().writeAndFlush(packet);
     }
 

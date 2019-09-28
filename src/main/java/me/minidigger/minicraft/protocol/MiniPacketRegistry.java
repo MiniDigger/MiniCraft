@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+import me.minidigger.minicraft.protocol.client.ClientPlayDeclareCommands;
 import me.minidigger.minicraft.protocol.client.ClientStatusPong;
 import me.minidigger.minicraft.protocol.server.ServerHandshake;
 import me.minidigger.minicraft.protocol.client.ClientLoginDisconnect;
@@ -35,12 +36,12 @@ import me.minidigger.minicraft.protocol.server.ServerPlayTeleportConfirm;
 import me.minidigger.minicraft.protocol.server.ServerStatusPing;
 import me.minidigger.minicraft.protocol.server.ServerStatusRequest;
 
-public class PacketRegistry {
+public class MiniPacketRegistry {
 
-    private static final Logger log = LoggerFactory.getLogger(PacketRegistry.class);
+    private static final Logger log = LoggerFactory.getLogger(MiniPacketRegistry.class);
 
-    private Table<PacketState, Integer, Class<? extends Packet>> serverRegistry = HashBasedTable.create();
-    private Table<PacketState, Integer, Class<? extends Packet>> clientRegistry = HashBasedTable.create();
+    private Table<PacketState, Integer, Class<? extends MiniPacket>> serverRegistry = HashBasedTable.create();
+    private Table<PacketState, Integer, Class<? extends MiniPacket>> clientRegistry = HashBasedTable.create();
 
     public void init() {
         //
@@ -85,6 +86,7 @@ public class PacketRegistry {
 
         // play
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x0E, ClientPlayChatMessage.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x11, ClientPlayDeclareCommands.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x18, ClientPlayPluginMessage.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x20, ClientPlayKeepAlive.class);
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x21, ClientPlayChunkData.class);
@@ -92,7 +94,7 @@ public class PacketRegistry {
         register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x35, ClientPlayPositionAndLook.class);
     }
 
-    public void register(PacketDirection direction, PacketState state, int packetId, Class<? extends Packet> packetClass) {
+    public void register(PacketDirection direction, PacketState state, int packetId, Class<? extends MiniPacket> packetClass) {
         if (direction == PacketDirection.TO_SERVER) {
             serverRegistry.put(state, packetId, packetClass);
         } else {
@@ -100,7 +102,7 @@ public class PacketRegistry {
         }
     }
 
-    public Class<? extends Packet> getPacket(PacketDirection direction, PacketState state, int packetId) {
+    public Class<? extends MiniPacket> getPacket(PacketDirection direction, PacketState state, int packetId) {
         if (direction == PacketDirection.TO_SERVER) {
             return serverRegistry.get(state, packetId);
         } else {
@@ -108,7 +110,7 @@ public class PacketRegistry {
         }
     }
 
-    public void fillInfo(Packet packet) {
+    public void fillInfo(MiniPacket packet) {
         // this is really ugly, lol
         var cell = serverRegistry.cellSet().stream().filter(c -> Objects.equals(c.getValue(), packet.getClass())).findFirst();
         if(cell.isEmpty()) {

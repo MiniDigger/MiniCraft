@@ -6,15 +6,16 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.App;
+import me.minidigger.minicraft.protocol.MiniPacketHandler;
 import me.minidigger.minicraft.api.Server;
-import me.minidigger.minicraft.console.MiniConsole;
 import me.minidigger.minicraft.netty.pipeline.MiniPipeline;
-import me.minidigger.minicraft.protocol.PacketRegistry;
 
-public class MiniCraftServer {
+public class MiniCraftServer extends App {
 
     private final int port;
+
+    private MiniPacketHandler packetHandler;
 
     public MiniCraftServer(int port) {
         this.port = port;
@@ -25,15 +26,13 @@ public class MiniCraftServer {
     }
 
     public void run() throws NoSuchAlgorithmException {
-        PacketRegistry packetRegistry = new PacketRegistry();
-        packetRegistry.init();
+        init();
 
         Server server = new Server();
         server.start();
-        MiniConsole serverConsole = new MiniConsole();
-        serverConsole.start();
 
-        PacketHandler packetHandler = new MiniServerPacketHandler(server);
+        packetHandler = new MiniServerPacketHandler(server);
+        packetHandler.init();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -42,7 +41,7 @@ public class MiniCraftServer {
             ServerBootstrap bootstrap = new ServerBootstrap()
                     .group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new MiniPipeline(packetRegistry, packetHandler, null));
+                    .childHandler(new MiniPipeline(getPacketRegistry(), getPacketHandler(), null));
 
             bootstrap.bind(port).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
@@ -51,5 +50,15 @@ public class MiniCraftServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    @Override
+    public String getAppName() {
+        return "MiniCraftServer";
+    }
+
+    @Override
+    public MiniPacketHandler getPacketHandler() {
+        return packetHandler;
     }
 }

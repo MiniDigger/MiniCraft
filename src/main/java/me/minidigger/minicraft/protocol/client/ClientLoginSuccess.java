@@ -5,12 +5,10 @@ import com.google.common.base.MoreObjects;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.protocol.DataTypes;
 
-public class ClientLoginSuccess extends Packet {
+public class ClientLoginSuccess extends MiniPacket {
 
     private String username;
     private UUID uuid;
@@ -37,11 +35,6 @@ public class ClientLoginSuccess extends Packet {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-
     }
 
     @Override

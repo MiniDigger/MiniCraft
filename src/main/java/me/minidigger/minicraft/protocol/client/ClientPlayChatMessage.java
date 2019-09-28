@@ -7,12 +7,10 @@ import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import io.netty.buffer.ByteBuf;
 import me.minidigger.minicraft.model.ChatPosition;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.protocol.DataTypes;
 
-public class ClientPlayChatMessage extends Packet {
+public class ClientPlayChatMessage extends MiniPacket {
 
     private Component component;
     private ChatPosition position;
@@ -31,11 +29,6 @@ public class ClientPlayChatMessage extends Packet {
 
     public void setPosition(ChatPosition position) {
         this.position = position;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-
     }
 
     @Override

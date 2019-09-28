@@ -3,12 +3,10 @@ package me.minidigger.minicraft.protocol.client;
 import com.google.common.base.MoreObjects;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
 import me.minidigger.minicraft.protocol.DataTypes;
-import me.minidigger.minicraft.protocol.Packet;
+import me.minidigger.minicraft.protocol.MiniPacket;
 
-public class ClientLoginEncryptionRequest extends Packet {
+public class ClientLoginEncryptionRequest extends MiniPacket {
 
     private String serverId;
     private byte[] key;
@@ -36,11 +34,6 @@ public class ClientLoginEncryptionRequest extends Packet {
 
     public void setToken(byte[] token) {
         this.token = token;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-
     }
 
     @Override

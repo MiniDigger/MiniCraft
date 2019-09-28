@@ -1,16 +1,14 @@
 package me.minidigger.minicraft.protocol;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
 
-public abstract class Packet {
+public abstract class MiniPacket {
 
     private PacketDirection direction;
     private PacketState state;
     private int id;
 
-    public Packet() {
+    public MiniPacket() {
     }
 
     public PacketDirection getDirection() {
@@ -36,8 +34,6 @@ public abstract class Packet {
     public void setId(int id) {
         this.id = id;
     }
-
-    public abstract void handle(MiniConnection connection, PacketHandler handler);
 
     public abstract void toWire(ByteBuf buf);
 

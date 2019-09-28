@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="console-pattern">%cyan{[%d{HH:mm:ss}]} %highlight{[%-5.5level]} %white{[%-25.25thread]} %highlight{[%-30.30c{1.}]: %msg%n}</Property>
-        <Property name="file-pattern">[%d{HH:mm:ss}] [%-5.5level] [%-25.25thread] [%-30.30c{1.}]: %msg%n</Property>
+        <Property name="console-pattern">%cyan{[%d{HH:mm:ss}]} %highlight{[%-5.5level]} %white{[%-25.25thread]} %highlight{[%-30.30c{1.}]:} %minecraftFormatting{%msg}%n</Property>
+        <Property name="file-pattern">[%d{HH:mm:ss}] [%-5.5level] [%-25.25thread] [%-30.30c{1.}]: %minecraftFormatting{%msg}{strip}%n</Property>
     </Properties>
     <Appenders>
         <TerminalConsole name="Console">
@@ -18,7 +18,7 @@
     </Appenders>
     <Loggers>
         <Logger name="io.netty" level="info" />
-        <Logger name="me.minidigger" level="debug" />
+        <Logger name="me.minidigger" level="info" />
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>

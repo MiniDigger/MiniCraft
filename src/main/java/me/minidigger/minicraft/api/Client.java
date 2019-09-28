@@ -1,53 +1,74 @@
 package me.minidigger.minicraft.api;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
+import javax.security.auth.callback.Callback;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import me.minidigger.minicraft.client.MiniCraftClient;
+import me.minidigger.minicraft.model.ServerStatusResponse;
 import me.minidigger.minicraft.netty.MiniConnection;
+import me.minidigger.minicraft.netty.pipeline.MiniPipeline;
 import me.minidigger.minicraft.protocol.PacketState;
+import me.minidigger.minicraft.protocol.client.ClientStatusResponse;
 import me.minidigger.minicraft.protocol.server.ServerHandshake;
 import me.minidigger.minicraft.protocol.server.ServerStatusRequest;
 
 public class Client {
 
     private String username;
-    private MiniConnection connection;
+    private MiniCraftClient miniCraftClient;
+    private Channel channel;
 
-    public Client(String username) {
+    public Client(String username, MiniCraftClient miniCraftClient) {
         this.username = username;
+        this.miniCraftClient = miniCraftClient;
     }
 
-    public void start() {
+    public void connect(String hostname, int port, Consumer<MiniConnection> callback) {
         new Thread(() -> {
-            while (connection == null) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            EventLoopGroup group = new NioEventLoopGroup();
 
-            doServerListPing();
             try {
-                Thread.sleep(1000);
+                Bootstrap bootstrap = new Bootstrap()
+                        .group(group)
+                        .channel(NioSocketChannel.class)
+                        .handler(new MiniPipeline(miniCraftClient.getPacketRegistry(), miniCraftClient.getPacketHandler(), callback));
+
+                channel = bootstrap.connect(hostname, port).sync().channel();
+                channel.closeFuture().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                group.shutdownGracefully();
             }
-            System.exit(0);
-        }, "ClientThread").start();
+        }, "ConnectionThread " + hostname + ":" + port).start();
     }
 
-    public void doServerListPing() {
-        ServerHandshake handshake = new ServerHandshake();
-        handshake.setProtocolVersion(-1);
-        handshake.setServerAddress("localhost");
-        handshake.setServerPort((short) 25565);
-        handshake.setNextState(PacketState.STATUS);
-        connection.sendPacket(handshake);
-        connection.setState(PacketState.STATUS);
+    public CompletableFuture<ServerStatusResponse> doServerListPing(String hostname, int port) {
+        CompletableFuture<ServerStatusResponse> future = new CompletableFuture<>();
+        connect(hostname, port, (connection) -> {
+            ServerHandshake handshake = new ServerHandshake();
+            handshake.setProtocolVersion(-1);
+            handshake.setServerAddress(hostname);
+            handshake.setServerPort((short) port);
+            handshake.setNextState(PacketState.STATUS);
+            connection.sendPacket(handshake);
+            connection.setState(PacketState.STATUS);
 
-        ServerStatusRequest statusRequest = new ServerStatusRequest();
-        connection.sendPacket(statusRequest);
-    }
+            miniCraftClient.getPacketHandler().registerCallback(ClientStatusResponse.class, (connection1, clientStatusResponse) -> {
+                channel.close();
+                future.complete(clientStatusResponse.getResponse());
+            });
 
-    public void setConnection(MiniConnection connection) {
-        this.connection = connection;
+            ServerStatusRequest statusRequest = new ServerStatusRequest();
+            connection.sendPacket(statusRequest);
+        });
+        return future;
     }
 }

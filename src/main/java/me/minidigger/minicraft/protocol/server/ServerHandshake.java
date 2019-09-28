@@ -4,12 +4,10 @@ import com.google.common.base.MoreObjects;
 
 import io.netty.buffer.ByteBuf;
 import me.minidigger.minicraft.protocol.DataTypes;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.protocol.PacketState;
-import me.minidigger.minicraft.netty.MiniConnection;
 
-public class ServerHandshake extends Packet {
+public class ServerHandshake extends MiniPacket {
 
     private int protocolVersion;
     private String serverAddress;
@@ -62,11 +60,6 @@ public class ServerHandshake extends Packet {
         this.serverAddress = DataTypes.readString(buf);
         this.serverPort = DataTypes.readShort(buf);
         this.nextState = PacketState.fromId(DataTypes.readVarInt(buf));
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-        handler.handle(connection, this);
     }
 
     @Override

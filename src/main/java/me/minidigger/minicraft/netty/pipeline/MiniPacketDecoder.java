@@ -10,19 +10,19 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import me.minidigger.minicraft.netty.MiniChannelHandler;
 import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.PacketRegistry;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacketRegistry;
+import me.minidigger.minicraft.protocol.MiniPacketHandler;
 import me.minidigger.minicraft.protocol.DataTypes;
-import me.minidigger.minicraft.protocol.Packet;
+import me.minidigger.minicraft.protocol.MiniPacket;
 
 public class MiniPacketDecoder extends ByteToMessageDecoder {
 
     private static final Logger log = LoggerFactory.getLogger(MiniPacketDecoder.class);
 
-    private PacketRegistry packetRegistry;
-    private PacketHandler packetHandler;
+    private MiniPacketRegistry packetRegistry;
+    private MiniPacketHandler packetHandler;
 
-    public MiniPacketDecoder(PacketRegistry packetRegistry, PacketHandler packetHandler) {
+    public MiniPacketDecoder(MiniPacketRegistry packetRegistry, MiniPacketHandler packetHandler) {
         this.packetRegistry = packetRegistry;
         this.packetHandler = packetHandler;
     }
@@ -33,7 +33,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
 
         int packetId = DataTypes.readVarInt(in);
         log.debug("got packet id {}, state is {}, bytes to read {}", packetId, connection.getState(), in.readableBytes());
-        Class<? extends Packet> packetClass = packetRegistry.getPacket(packetHandler.getDirection(), connection.getState(), packetId);
+        Class<? extends MiniPacket> packetClass = packetRegistry.getPacket(packetHandler.getDirection(), connection.getState(), packetId);
 
         if (packetClass == null) {
             log.warn("Couldn't find a packet class for {}:{}:{}", packetHandler.getDirection(), connection.getState(), packetId);
@@ -41,7 +41,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        Packet packet = (Packet) packetClass.getConstructors()[0].newInstance();
+        MiniPacket packet = (MiniPacket) packetClass.getConstructors()[0].newInstance();
         packet.setDirection(packetHandler.getDirection());
         packet.setState(connection.getState());
         packet.setId(packetId);
@@ -50,7 +50,7 @@ public class MiniPacketDecoder extends ByteToMessageDecoder {
 
         log.debug("packet is {}", packet);
 
-        packet.handle(connection, packetHandler);
+        packetHandler.handle(connection, packet);
 
         if (in.readableBytes() > 0) {
             log.warn("Didn't fully read packet {}! {} bytes to go", packet.getClass().getSimpleName(), in.readableBytes());

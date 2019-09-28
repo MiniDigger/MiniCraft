@@ -34,6 +34,10 @@ public class ServerStatusResponse {
         return LegacyComponentSerializer.INSTANCE.deserialize(description.getText());
     }
 
+    public String getRawDescription() {
+        return description.getText();
+    }
+
     public String getFavicon() {
         return favicon;
     }
@@ -41,9 +45,9 @@ public class ServerStatusResponse {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("version", version)
-                .add("players", players)
-                .add("description", description)
+                .add("version", version).addValue("§r")
+                .add("players", players).addValue("§r")
+                .add("description", description).addValue("§r")
                 .add("favicon", favicon == null)
                 .toString();
     }
@@ -128,7 +132,7 @@ public class ServerStatusResponse {
             @Override
             public String toString() {
                 return MoreObjects.toStringHelper(this)
-                        .add("name", name)
+                        .add("name", name).addValue("§r")
                         .add("id", id)
                         .toString();
             }

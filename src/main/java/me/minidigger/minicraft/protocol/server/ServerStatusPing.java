@@ -3,21 +3,14 @@ package me.minidigger.minicraft.protocol.server;
 import com.google.common.base.MoreObjects;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 
-public class ServerStatusPing extends Packet {
+public class ServerStatusPing extends MiniPacket {
 
     private long payload;
 
     public long getPayload() {
         return payload;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-        handler.handle(connection, this);
     }
 
     @Override

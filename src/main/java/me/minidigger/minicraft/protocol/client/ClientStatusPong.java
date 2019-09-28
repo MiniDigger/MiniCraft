@@ -3,11 +3,9 @@ package me.minidigger.minicraft.protocol.client;
 import com.google.common.base.MoreObjects;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
-import me.minidigger.minicraft.netty.MiniConnection;
+import me.minidigger.minicraft.protocol.MiniPacket;
 
-public class ClientStatusPong extends Packet {
+public class ClientStatusPong extends MiniPacket {
 
     private long payload;
 
@@ -17,11 +15,6 @@ public class ClientStatusPong extends Packet {
 
     public void setPayload(long payload) {
         this.payload = payload;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-        handler.handle(connection, this);
     }
 
     @Override

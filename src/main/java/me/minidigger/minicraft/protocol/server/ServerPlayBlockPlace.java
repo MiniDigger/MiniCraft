@@ -3,15 +3,13 @@ package me.minidigger.minicraft.protocol.server;
 import com.google.common.base.MoreObjects;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
 import me.minidigger.minicraft.model.BlockFace;
 import me.minidigger.minicraft.model.BlockPosition;
 import me.minidigger.minicraft.model.Hand;
 import me.minidigger.minicraft.protocol.DataTypes;
-import me.minidigger.minicraft.protocol.Packet;
+import me.minidigger.minicraft.protocol.MiniPacket;
 
-public class ServerPlayBlockPlace extends Packet {
+public class ServerPlayBlockPlace extends MiniPacket {
 
     private Hand hand;
     private BlockPosition position;
@@ -47,11 +45,6 @@ public class ServerPlayBlockPlace extends Packet {
 
     public boolean isInsideBlock() {
         return insideBlock;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-        handler.handle(connection, this);
     }
 
     @Override

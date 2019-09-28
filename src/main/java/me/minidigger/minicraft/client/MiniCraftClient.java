@@ -1,55 +1,90 @@
 package me.minidigger.minicraft.client;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import me.minidigger.minicraft.App;
 import me.minidigger.minicraft.api.Client;
-import me.minidigger.minicraft.console.MiniConsole;
-import me.minidigger.minicraft.netty.pipeline.MiniPipeline;
-import me.minidigger.minicraft.protocol.PacketRegistry;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.model.ServerStatusResponse;
+import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.protocol.MiniPacketHandler;
 
-public class MiniCraftClient {
+import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static com.mojang.brigadier.arguments.StringArgumentType.*;
 
-    private final int port;
-    private final String host;
+public class MiniCraftClient extends App {
 
-    public MiniCraftClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    private MiniPacketHandler packetHandler;
+    private Client client;
+
+    public MiniCraftClient() {
     }
 
     public static void main(String[] args) {
-        new MiniCraftClient("localhost", 25565).run();
+        new MiniCraftClient().run();
     }
 
     public void run() {
-        PacketRegistry packetRegistry = new PacketRegistry();
-        packetRegistry.init();
+        init();
 
-        Client client = new Client("MiniDigger");
-        client.start();
-        MiniConsole serverConsole = new MiniConsole();
-        serverConsole.start();
+        client = new Client("MiniDigger", this);
 
-        PacketHandler packetHandler = new MiniClientPacketHandler(client);
+        packetHandler = new MiniClientPacketHandler(client);
+        packetHandler.init();
+    }
 
-        EventLoopGroup group = new NioEventLoopGroup();
+    @Override
+    public void registerCommands() {
+        super.registerCommands();
 
-        try {
-            Bootstrap bootstrap = new Bootstrap()
-                    .group(group)
-                    .channel(NioSocketChannel.class)
-                    .handler(new MiniPipeline(packetRegistry, packetHandler, client::setConnection));
+        BiConsumer<ServerStatusResponse, CommandSource> handle = (r, s) -> {
+            s.sendMessage("Response: " + r.getPlayers().getOnline() + "/" + r.getPlayers().getMax());
+            if (r.getPlayers().getSample().size() > 0) {
+                s.sendMessage("Sample:");
+                r.getPlayers().getSample().forEach((ps) -> s.sendMessage(ps.toString()));
+            }
+            if (r.getRawDescription().length() > 0) {
+                s.sendMessage("Motd:");
+                s.sendMessage(r.getRawDescription());
+            }
+        };
+        RequiredArgumentBuilder<CommandSource, Integer> portBuilder = RequiredArgumentBuilder.argument("port", integer());
+        portBuilder.executes(c -> {
+            CompletableFuture<ServerStatusResponse> future = client.doServerListPing(getString(c, "hostname"), getInteger(c, "port"));
+            future.thenAcceptAsync((r) -> handle.accept(r, c.getSource()));
+            return 1;
+        });
 
-            Channel channel = bootstrap.connect(host, port).sync().channel();
-            channel.closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            group.shutdownGracefully();
-        }
+        RequiredArgumentBuilder<CommandSource, String> hostNameBuilder = RequiredArgumentBuilder.argument("hostname", string());
+        hostNameBuilder.executes(c -> {
+            CompletableFuture<ServerStatusResponse> future = client.doServerListPing(getString(c, "hostname"), 25565);
+            future.thenAcceptAsync((r) -> handle.accept(r, c.getSource()));
+            return 1;
+        });
+
+        LiteralArgumentBuilder<CommandSource> pingBuilder = LiteralArgumentBuilder.literal("ping");
+        pingBuilder.executes(c -> {
+            c.getSource().sendMessage("Invalid args: ");
+            c.getSource().sendSmartUsage(getCommandDispatcher(), c.getNodes().get(0).getNode());
+            return 1;
+        });
+
+        pingBuilder.then(hostNameBuilder.then(portBuilder));
+        getCommandDispatcher().register(pingBuilder);
+    }
+
+    @Override
+    public String getAppName() {
+        return "MiniCraftClient";
+    }
+
+    @Override
+    public MiniPacketHandler getPacketHandler() {
+        return packetHandler;
     }
 }

@@ -6,17 +6,17 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import me.minidigger.minicraft.netty.MiniChannelHandler;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacketHandler;
 import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.PacketRegistry;
+import me.minidigger.minicraft.protocol.MiniPacketRegistry;
 
 public class MiniPipeline extends ChannelInitializer<SocketChannel> {
 
-    private final PacketRegistry packetRegistry;
-    private final PacketHandler packetHandler;
+    private final MiniPacketRegistry packetRegistry;
+    private final MiniPacketHandler packetHandler;
     private final Consumer<MiniConnection> connectCallback;
 
-    public MiniPipeline(PacketRegistry packetRegistry, PacketHandler packetHandler, Consumer<MiniConnection> connectCallback) {
+    public MiniPipeline(MiniPacketRegistry packetRegistry, MiniPacketHandler packetHandler, Consumer<MiniConnection> connectCallback) {
         this.packetRegistry = packetRegistry;
         this.packetHandler = packetHandler;
         this.connectCallback = connectCallback;

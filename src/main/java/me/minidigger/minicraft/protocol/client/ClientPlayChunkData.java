@@ -5,14 +5,12 @@ import com.google.common.base.MoreObjects;
 import net.kyori.nbt.ListTag;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.model.chunk.ChunkData;
 import me.minidigger.minicraft.model.chunk.ChunkPosition;
 import me.minidigger.minicraft.protocol.DataTypes;
 
-public class ClientPlayChunkData extends Packet {
+public class ClientPlayChunkData extends MiniPacket {
 
     private ChunkPosition chunkPosition;
     private boolean fullChunk = true;
@@ -49,11 +47,6 @@ public class ClientPlayChunkData extends Packet {
 
     public void setChunkData(ChunkData chunkData) {
         this.chunkData = chunkData;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-
     }
 
     @Override

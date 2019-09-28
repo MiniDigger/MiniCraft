@@ -7,12 +7,10 @@ import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.plain.PlainComponentSerializer;
 
 import io.netty.buffer.ByteBuf;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.protocol.DataTypes;
 
-public class ClientLoginDisconnect extends Packet {
+public class ClientLoginDisconnect extends MiniPacket {
 
     private Component reason;
 
@@ -22,11 +20,6 @@ public class ClientLoginDisconnect extends Packet {
 
     public void setReason(Component reason) {
         this.reason = reason;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-
     }
 
     @Override

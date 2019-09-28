@@ -6,12 +6,10 @@ import io.netty.buffer.ByteBuf;
 import me.minidigger.minicraft.model.Dimension;
 import me.minidigger.minicraft.model.GameMode;
 import me.minidigger.minicraft.model.LevelType;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.Packet;
-import me.minidigger.minicraft.protocol.handler.PacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacket;
 import me.minidigger.minicraft.protocol.DataTypes;
 
-public class ClientPlayJoinGame extends Packet {
+public class ClientPlayJoinGame extends MiniPacket {
 
     private int entityId;
     private GameMode gameMode;
@@ -75,11 +73,6 @@ public class ClientPlayJoinGame extends Packet {
 
     public void setReducedDebugInfo(boolean reducedDebugInfo) {
         this.reducedDebugInfo = reducedDebugInfo;
-    }
-
-    @Override
-    public void handle(MiniConnection connection, PacketHandler handler) {
-
     }
 
     @Override
