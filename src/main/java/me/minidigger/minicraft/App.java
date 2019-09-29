@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.MiniACFCommandManager;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import me.minidigger.minicraft.console.MiniConsole;
 import me.minidigger.minicraft.model.command.CommandSource;
 import me.minidigger.minicraft.protocol.MiniPacketHandler;
@@ -43,19 +45,23 @@ public abstract class App {
 
     class Commands extends BaseCommand {
         @CommandAlias("info")
+        @Description("Shows information about this application")
         public void info(CommandSource source) {
             source.sendMessage("You are using " + getAppName() + ", woooo!");
         }
 
         @CommandAlias("close")
+        @Description("Safely closes this application")
         public void close(CommandSource source) {
             source.sendMessage("Shutting down " + getAppName() + ", bye!");
             System.exit(0);
         }
 
         @CommandAlias("help")
+        @Description("Show a list with all commands")
         public void help(CommandSource source) {
             source.sendMessage("You have access to the following commands: ");
+            getCommandManager().sendHelp(source);
         }
     }
 

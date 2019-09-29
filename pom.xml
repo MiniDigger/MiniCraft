@@ -16,6 +16,9 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>13</release>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
@@ -81,11 +84,11 @@
             <artifactId>terminalconsoleappender</artifactId>
             <version>1.2.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jline</groupId>-->
-<!--            <artifactId>jline-terminal-jansi</artifactId>-->
-<!--            <version>3.12.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jline</groupId>-->
+        <!--            <artifactId>jline-terminal-jansi</artifactId>-->
+        <!--            <version>3.12.1</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline-terminal-jna</artifactId>

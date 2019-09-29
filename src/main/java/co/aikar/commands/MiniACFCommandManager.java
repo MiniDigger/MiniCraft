@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,8 +58,7 @@ public class MiniACFCommandManager extends CommandManager<
     protected MiniACFCommandContexts contexts;
     protected MiniACFCommandCompletions completions;
     protected MiniACFLocales locales;
-    private boolean cantReadLocale = false;
-    protected boolean autoDetectFromClient = true;
+    private ACFBrigadierManager<CommandSource> brigadierManager;
 
     @SuppressWarnings("JavaReflectionMemberAccess")
     public MiniACFCommandManager() {
@@ -67,6 +67,10 @@ public class MiniACFCommandManager extends CommandManager<
         this.formatters.put(MessageType.INFO, new MiniACFMessageFormatter(TextColor.BLUE, TextColor.DARK_GREEN, TextColor.GREEN));
         this.formatters.put(MessageType.HELP, new MiniACFMessageFormatter(TextColor.AQUA, TextColor.GREEN, TextColor.YELLOW));
         getLocales(); // auto load locales
+
+        enableUnstableAPI("help");
+        enableUnstableAPI("brigadier");
+        this.brigadierManager = new MiniACFBrigadierManager(this, new MiniACFBrigadierProvider());
     }
 
     @Override
@@ -112,6 +116,7 @@ public class MiniACFCommandManager extends CommandManager<
             String commandName = entry.getKey().toLowerCase();
             MiniACFRootCommand bukkitCommand = (MiniACFRootCommand) entry.getValue();
             registeredCommands.put(commandName, bukkitCommand);
+            brigadierManager.register(bukkitCommand);
         }
     }
 
@@ -205,5 +210,23 @@ public class MiniACFCommandManager extends CommandManager<
             args = new String[0];
         }
         rootCommand.execute(issuer, cmd, args);
+    }
+
+    public void sendHelp(CommandSource source) {
+        CommandIssuer issuer = getCommandIssuer(source);
+        List<HelpEntry> helpEntries = new ArrayList<>();
+        for (MiniACFRootCommand cmd : registeredCommands.values()) {
+            CommandHelp commandHelp = generateCommandHelp(issuer, cmd);
+            helpEntries.addAll(commandHelp.getHelpEntries());
+        }
+
+        MiniACFRootCommand fakeCommand = new MiniACFRootCommand(this, "all commands");
+        fakeCommand.addChild(new BaseCommand() {
+        });
+
+        CommandHelp aggregated = new CommandHelp(this, fakeCommand, issuer);
+        aggregated.getHelpEntries().clear();
+        aggregated.getHelpEntries().addAll(helpEntries);
+        aggregated.showHelp(issuer);
     }
 }

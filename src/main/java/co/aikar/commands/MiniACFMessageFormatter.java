@@ -33,6 +33,6 @@ public class MiniACFMessageFormatter extends MessageFormatter<TextColor> {
 
     @Override
     String format(TextColor color, String message) {
-        return color + message;
+        return message;
     }
 }
