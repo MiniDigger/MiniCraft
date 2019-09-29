@@ -2,16 +2,22 @@ package me.minidigger.minicraft.api;
 
 import com.google.common.base.MoreObjects;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.CommandNode;
+
 import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.text.serializer.plain.PlainComponentSerializer;
 
 import java.util.UUID;
 
 import me.minidigger.minicraft.model.ChatPosition;
+import me.minidigger.minicraft.model.CommandSource;
 import me.minidigger.minicraft.netty.MiniConnection;
 import me.minidigger.minicraft.protocol.client.ClientPlayChatMessage;
 import me.minidigger.minicraft.protocol.client.ClientPlayKeepAlive;
 
-public class Player {
+public class Player implements CommandSource {
 
     private UUID uuid;
     private String name;
@@ -38,6 +44,7 @@ public class Player {
     public String getName() {
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -73,5 +80,10 @@ public class Player {
         packet.setComponent(component);
         packet.setPosition(position);
         getConnection().sendPacket(packet);
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        sendMessage(LegacyComponentSerializer.legacy().deserialize(message));
     }
 }

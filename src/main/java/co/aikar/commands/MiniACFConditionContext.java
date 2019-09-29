@@ -23,7 +23,7 @@
 
 package co.aikar.commands;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFConditionContext extends ConditionContext<MiniACFCommandIssuer> {
     MiniACFConditionContext(MiniACFCommandIssuer issuer, String config) {

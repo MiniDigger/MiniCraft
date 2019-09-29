@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import me.minidigger.minicraft.model.ServerStatusResponse;
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniClientCommandHandler extends BaseCommand {
 

@@ -31,7 +31,7 @@ public class MiniCraftServer extends App {
         Server server = new Server();
         server.start();
 
-        packetHandler = new MiniServerPacketHandler(server);
+        packetHandler = new MiniServerPacketHandler(server, this);
         packetHandler.init();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();

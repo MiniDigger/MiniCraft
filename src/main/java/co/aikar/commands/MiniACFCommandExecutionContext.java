@@ -26,7 +26,7 @@ package co.aikar.commands;
 import java.util.List;
 import java.util.Map;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFCommandExecutionContext extends CommandExecutionContext<MiniACFCommandExecutionContext, MiniACFCommandIssuer> {
     MiniACFCommandExecutionContext(RegisteredCommand cmd, CommandParameter param, MiniACFCommandIssuer sender, List<String> args,

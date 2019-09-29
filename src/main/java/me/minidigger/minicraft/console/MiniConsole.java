@@ -1,8 +1,5 @@
 package me.minidigger.minicraft.console;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
 
 import org.jline.reader.LineReader;
@@ -11,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import co.aikar.commands.MiniACFCommandManager;
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniConsole extends SimpleTerminalConsole implements CommandSource {
 

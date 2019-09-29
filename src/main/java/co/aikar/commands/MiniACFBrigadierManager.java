@@ -7,7 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import java.util.concurrent.CompletableFuture;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFBrigadierManager extends ACFBrigadierManager<CommandSource> {
 

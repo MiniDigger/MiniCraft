@@ -23,7 +23,7 @@
 
 package co.aikar.commands;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 @SuppressWarnings("WeakerAccess")
 public class MiniACFCommandContexts extends CommandContexts<MiniACFCommandExecutionContext> {

@@ -2,7 +2,7 @@ package co.aikar.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFBrigadierProvider implements ACFBrigadierProvider {
 

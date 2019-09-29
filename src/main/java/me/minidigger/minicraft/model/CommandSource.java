@@ -1,4 +1,4 @@
-package me.minidigger.minicraft.model.command;
+package me.minidigger.minicraft.model;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;

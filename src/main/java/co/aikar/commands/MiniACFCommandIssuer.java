@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFCommandIssuer implements CommandIssuer {
     private final MiniACFCommandManager manager;

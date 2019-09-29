@@ -24,7 +24,7 @@
 package co.aikar.commands;
 
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFCommandCompletionContext extends CommandCompletionContext<MiniACFCommandIssuer> {
     MiniACFCommandCompletionContext(RegisteredCommand command, MiniACFCommandIssuer issuer, String input, String config, String[] args) {

@@ -27,7 +27,6 @@ import net.kyori.text.format.TextColor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,12 +34,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import co.aikar.commands.apachecommonslang.ApacheCommonsExceptionUtil;
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 @SuppressWarnings("WeakerAccess")
 public class MiniACFCommandManager extends CommandManager<
@@ -228,5 +226,9 @@ public class MiniACFCommandManager extends CommandManager<
         aggregated.getHelpEntries().clear();
         aggregated.getHelpEntries().addAll(helpEntries);
         aggregated.showHelp(issuer);
+    }
+
+    public ACFBrigadierManager<CommandSource> getBrigadierManager() {
+        return brigadierManager;
     }
 }

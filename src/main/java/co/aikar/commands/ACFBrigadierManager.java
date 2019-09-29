@@ -17,6 +17,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,8 @@ public abstract class ACFBrigadierManager<S> implements SuggestionProvider<S> {
     private CommandManager<?, ?, ?, ?, ?, ?> manager;
     private CommandDispatcher<S> dispatcher;
 
-    private Map<Class<?>, ArgumentType<?>> arguments = new HashMap<>();
+    private static Map<Class<?>, ArgumentType<?>> arguments = new HashMap<>();
+    private static Map<Class<?>, String> argumentNames = new HashMap<>();
 
     /**
      * Constructs a new brigadier manager, utilizing the currently active command manager and an brigadier provider.
@@ -53,15 +55,16 @@ public abstract class ACFBrigadierManager<S> implements SuggestionProvider<S> {
         manager.verifyUnstableAPI("brigadier");
 
         // TODO support stuff like min max via brigadier?
-        registerArgument(String.class, StringArgumentType.string());
-        registerArgument(float.class, FloatArgumentType.floatArg());
-        registerArgument(double.class, DoubleArgumentType.doubleArg());
-        registerArgument(boolean.class, BoolArgumentType.bool());
-        registerArgument(int.class, IntegerArgumentType.integer());
+        registerArgument(String.class, StringArgumentType.string(), "brigadier:string");
+        registerArgument(float.class, FloatArgumentType.floatArg(), "brigadier:float");
+        registerArgument(double.class, DoubleArgumentType.doubleArg(), "brigadier:double");
+        registerArgument(boolean.class, BoolArgumentType.bool(), "brigadier:bool");
+        registerArgument(int.class, IntegerArgumentType.integer(), "brigadier:integer");
     }
 
-    public <T> void registerArgument(Class<T> clazz, ArgumentType<T> type) {
+    public static <T> void registerArgument(Class<T> clazz, ArgumentType<T> type, String name) {
         arguments.put(clazz, type);
+        argumentNames.put(type.getClass(),name);
     }
 
     public void register(RootCommand command) {
@@ -112,6 +115,14 @@ public abstract class ACFBrigadierManager<S> implements SuggestionProvider<S> {
         return (ArgumentType<Object>) arguments.getOrDefault(clazz, StringArgumentType.string());
     }
 
+    public static String getArgumentKey(Class<?> clazz) {
+        return argumentNames.getOrDefault(clazz,"");
+    }
+
     @Override
     public abstract CompletableFuture<Suggestions> getSuggestions(CommandContext<S> context, SuggestionsBuilder builder) throws CommandSyntaxException;
+
+    public RootCommandNode<S> getRoot() {
+        return dispatcher.getRoot();
+    }
 }

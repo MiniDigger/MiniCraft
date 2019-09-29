@@ -29,7 +29,7 @@ import com.google.common.collect.SetMultimap;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 
 public class MiniACFRootCommand implements RootCommand {
 

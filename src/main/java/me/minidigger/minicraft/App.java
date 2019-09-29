@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandHelp;
 import co.aikar.commands.MiniACFCommandManager;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import me.minidigger.minicraft.console.MiniConsole;
-import me.minidigger.minicraft.model.command.CommandSource;
+import me.minidigger.minicraft.model.CommandSource;
 import me.minidigger.minicraft.protocol.MiniPacketHandler;
 import me.minidigger.minicraft.protocol.MiniPacketRegistry;
 
@@ -62,6 +62,12 @@ public abstract class App {
         public void help(CommandSource source) {
             source.sendMessage("You have access to the following commands: ");
             getCommandManager().sendHelp(source);
+        }
+
+        @CommandAlias("test")
+        @Description("Just a brigadier test command")
+        public void test(CommandSource source, String someArg, @Default("2") int someOptionalArg) {
+            source.sendMessage("Cool, you entered " + someArg + " and " + someOptionalArg);
         }
     }
 

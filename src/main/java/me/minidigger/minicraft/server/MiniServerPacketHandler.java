@@ -32,6 +32,7 @@ import me.minidigger.minicraft.protocol.PacketState;
 import me.minidigger.minicraft.protocol.client.ClientLoginEncryptionRequest;
 import me.minidigger.minicraft.protocol.client.ClientLoginSuccess;
 import me.minidigger.minicraft.protocol.client.ClientPlayChunkData;
+import me.minidigger.minicraft.protocol.client.ClientPlayDeclareCommands;
 import me.minidigger.minicraft.protocol.client.ClientPlayJoinGame;
 import me.minidigger.minicraft.protocol.client.ClientPlayPluginMessage;
 import me.minidigger.minicraft.protocol.client.ClientPlayPositionAndLook;
@@ -54,13 +55,15 @@ public class MiniServerPacketHandler extends MiniPacketHandler {
     private KeyPair pair;
 
     private Server server;
+    private MiniCraftServer app;
 
-    public MiniServerPacketHandler(Server server) throws NoSuchAlgorithmException {
+    public MiniServerPacketHandler(Server server, MiniCraftServer miniCraftServer) throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(1024);
         pair = keyGen.generateKeyPair();
 
         this.server = server;
+        this.app = miniCraftServer;
     }
 
     @Override
@@ -114,6 +117,10 @@ public class MiniServerPacketHandler extends MiniPacketHandler {
             log.info("Client brand of {} is {}", player.getName(), player.getBrand());
         });
         registerCallback(ServerPlayChatMessage.class, (connection, packet) -> {
+            if(packet.getMessage().startsWith("/")) {
+                app.getCommandManager().dispatchCommand(connection.getPlayer(),packet.getMessage());
+                return;
+            }
             log.info("[CHAT] <{}> {}", connection.getPlayer().getName(), packet.getMessage());
 
             Component msg = TextComponent.builder("<" + connection.getPlayer().getName() + "> ").color(TextColor.WHITE)
@@ -171,6 +178,10 @@ public class MiniServerPacketHandler extends MiniPacketHandler {
         ClientPlayPositionAndLook positionAndLook = new ClientPlayPositionAndLook();
         positionAndLook.setPosition(new Position(0, 0, 0));
         connection.sendPacket(positionAndLook);
+
+        ClientPlayDeclareCommands declareCommands = new ClientPlayDeclareCommands();
+        declareCommands.setRootCommandNode(app.getCommandManager().getBrigadierManager().getRoot());
+        connection.sendPacket(declareCommands);
 
         connection.getPlayer().setConnection(connection);
         server.getPlayers().add(connection.getPlayer());
