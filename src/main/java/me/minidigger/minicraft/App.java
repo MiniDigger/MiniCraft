@@ -1,23 +1,23 @@
 package me.minidigger.minicraft;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.MiniACFCommandManager;
+import co.aikar.commands.annotation.CommandAlias;
 import me.minidigger.minicraft.console.MiniConsole;
 import me.minidigger.minicraft.model.command.CommandSource;
-import me.minidigger.minicraft.protocol.MiniPacketRegistry;
 import me.minidigger.minicraft.protocol.MiniPacketHandler;
+import me.minidigger.minicraft.protocol.MiniPacketRegistry;
 
 public abstract class App {
 
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
-    private CommandDispatcher<CommandSource> commandDispatcher;
     private MiniConsole console;
     private MiniPacketRegistry packetRegistry;
+    private MiniACFCommandManager commandManager;
 
     public abstract String getAppName();
 
@@ -26,9 +26,9 @@ public abstract class App {
     public void init() {
         log.info("Starting  {}, hello friend!", getAppName());
 
-        commandDispatcher = new CommandDispatcher<>();
+        commandManager = new MiniACFCommandManager();
 
-        console = new MiniConsole(getAppName(), getCommandDispatcher());
+        console = new MiniConsole(getAppName(), getCommandManager());
         console.start();
 
         packetRegistry = new MiniPacketRegistry();
@@ -38,25 +38,25 @@ public abstract class App {
     }
 
     public void registerCommands() {
-        getCommandDispatcher().register(LiteralArgumentBuilder.<CommandSource>literal("info").executes(c -> {
-            c.getSource().sendMessage("You are using " + getAppName() + ", woooo!");
-            return 1;
-        }));
-        getCommandDispatcher().register(LiteralArgumentBuilder.<CommandSource>literal("close").executes(c -> {
-            c.getSource().sendMessage("Shutting down " + getAppName() + ", bye!");
-            System.exit(0);
-            return 1;
-        }));
-        getCommandDispatcher().register(LiteralArgumentBuilder.<CommandSource>literal("help").executes(c -> {
-            c.getSource().sendMessage("You have access to the following commands: ");
-            c.getSource().sendSmartUsage(getCommandDispatcher(), getCommandDispatcher().getRoot());
-            c.getSource().sendAllUsage(getCommandDispatcher(), getCommandDispatcher().getRoot());
-            return 1;
-        }));
+        getCommandManager().registerCommand(new Commands());
     }
 
-    public CommandDispatcher<CommandSource> getCommandDispatcher() {
-        return commandDispatcher;
+    class Commands extends BaseCommand {
+        @CommandAlias("info")
+        public void info(CommandSource source) {
+            source.sendMessage("You are using " + getAppName() + ", woooo!");
+        }
+
+        @CommandAlias("close")
+        public void close(CommandSource source) {
+            source.sendMessage("Shutting down " + getAppName() + ", bye!");
+            System.exit(0);
+        }
+
+        @CommandAlias("help")
+        public void help(CommandSource source) {
+            source.sendMessage("You have access to the following commands: ");
+        }
     }
 
     public MiniConsole getConsole() {
@@ -65,5 +65,9 @@ public abstract class App {
 
     public MiniPacketRegistry getPacketRegistry() {
         return packetRegistry;
+    }
+
+    public MiniACFCommandManager getCommandManager() {
+        return commandManager;
     }
 }

@@ -41,4 +41,8 @@ public class MiniConnection {
     public void initPlayer(String username) {
         player.setName(username);
     }
+
+    public void close() {
+        ctx.channel().close();
+    }
 }

@@ -14,9 +14,13 @@ public class ServerPlayChatMessage extends MiniPacket {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Override
     public void toWire(ByteBuf buf) {
-
+        DataTypes.writeString(this.message,buf);
     }
 
     @Override

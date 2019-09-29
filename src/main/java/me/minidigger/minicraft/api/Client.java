@@ -17,17 +17,23 @@ import me.minidigger.minicraft.netty.pipeline.MiniPipeline;
 import me.minidigger.minicraft.protocol.PacketState;
 import me.minidigger.minicraft.protocol.client.ClientStatusResponse;
 import me.minidigger.minicraft.protocol.server.ServerHandshake;
+import me.minidigger.minicraft.protocol.server.ServerPlayChatMessage;
 import me.minidigger.minicraft.protocol.server.ServerStatusRequest;
 
 public class Client {
 
     private String username;
     private MiniCraftClient miniCraftClient;
-    private Channel channel;
 
     public Client(String username, MiniCraftClient miniCraftClient) {
         this.username = username;
         this.miniCraftClient = miniCraftClient;
+    }
+
+    public void sendMessage(MiniConnection connection, String msg) {
+        ServerPlayChatMessage chatMessage = new ServerPlayChatMessage();
+        chatMessage.setMessage(msg);
+        connection.sendPacket(chatMessage);
     }
 
     public void connect(String hostname, int port, Consumer<MiniConnection> callback) {
@@ -40,8 +46,8 @@ public class Client {
                         .channel(NioSocketChannel.class)
                         .handler(new MiniPipeline(miniCraftClient.getPacketRegistry(), miniCraftClient.getPacketHandler(), callback));
 
-                channel = bootstrap.connect(hostname, port).sync().channel();
-                channel.closeFuture().sync();
+                // wait till connection should be closed
+                bootstrap.connect(hostname, port).sync().channel().closeFuture().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
@@ -62,7 +68,7 @@ public class Client {
             connection.setState(PacketState.STATUS);
 
             miniCraftClient.getPacketHandler().registerCallback(ClientStatusResponse.class, (connection1, clientStatusResponse) -> {
-                channel.close();
+                connection1.close();
                 future.complete(clientStatusResponse.getResponse());
             });
 

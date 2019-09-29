@@ -10,6 +10,7 @@ import org.jline.reader.LineReaderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import co.aikar.commands.MiniACFCommandManager;
 import me.minidigger.minicraft.model.command.CommandSource;
 
 public class MiniConsole extends SimpleTerminalConsole implements CommandSource {
@@ -17,11 +18,11 @@ public class MiniConsole extends SimpleTerminalConsole implements CommandSource 
     private static final Logger log = LoggerFactory.getLogger(MiniConsole.class);
 
     private String appName;
-    private CommandDispatcher<CommandSource> dispatcher;
+    private MiniACFCommandManager commandManager;
 
-    public MiniConsole(String appName, CommandDispatcher<CommandSource> commandDispatcher) {
+    public MiniConsole(String appName, MiniACFCommandManager commandManager) {
         this.appName = appName;
-        this.dispatcher = commandDispatcher;
+        this.commandManager = commandManager;
     }
 
     @Override
@@ -37,13 +38,7 @@ public class MiniConsole extends SimpleTerminalConsole implements CommandSource 
     @Override
     protected void runCommand(String command) {
         log.debug("Got command {}", command);
-        try {
-            int i = dispatcher.execute(command, this);
-        } catch (CommandSyntaxException e) {
-            log.error("Invalid command: {}", e.getMessage());
-        } catch (Exception e) {
-            log.error("Error while executing command {}", command, e);
-        }
+        commandManager.dispatchCommand(this, command);
     }
 
     @Override
