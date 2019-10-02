@@ -2,7 +2,7 @@
 
 Clean room implementation of the minecraft server (and client!) using java and netty.
 
-Nothing exciting here, just learning netty.
+Nothing exciting here, just learning netty. This is also mostly abbandoned.
 
 ## Whats done
 
