@@ -3,6 +3,7 @@ package me.minidigger.minicraft.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
-import javax.imageio.ImageIO;
 
 public class Server {
 
@@ -71,8 +71,10 @@ public class Server {
         if (encodedServerIcon == null) {
             final ByteArrayOutputStream os = new ByteArrayOutputStream();
             try {
-                ImageIO.write(serverIcon, "png", os);
-                encodedServerIcon = "data:image/png;base64," + Base64.getEncoder().encodeToString(os.toByteArray());
+                if (serverIcon != null) {
+                    ImageIO.write(serverIcon, "png", os);
+                    encodedServerIcon = "data:image/png;base64," + Base64.getEncoder().encodeToString(os.toByteArray());
+                }
             } catch (final IOException e) {
                 log.warn("Couldn't encode server icon", e);
                 return null;

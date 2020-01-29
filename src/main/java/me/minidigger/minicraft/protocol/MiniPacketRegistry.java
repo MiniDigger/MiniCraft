@@ -2,39 +2,12 @@ package me.minidigger.minicraft.protocol;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
+import me.minidigger.minicraft.protocol.client.*;
+import me.minidigger.minicraft.protocol.server.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
-
-import me.minidigger.minicraft.protocol.client.ClientPlayDeclareCommands;
-import me.minidigger.minicraft.protocol.client.ClientStatusPong;
-import me.minidigger.minicraft.protocol.server.ServerHandshake;
-import me.minidigger.minicraft.protocol.client.ClientLoginDisconnect;
-import me.minidigger.minicraft.protocol.client.ClientLoginEncryptionRequest;
-import me.minidigger.minicraft.protocol.client.ClientLoginSuccess;
-import me.minidigger.minicraft.protocol.client.ClientPlayChatMessage;
-import me.minidigger.minicraft.protocol.client.ClientPlayChunkData;
-import me.minidigger.minicraft.protocol.client.ClientPlayJoinGame;
-import me.minidigger.minicraft.protocol.client.ClientPlayKeepAlive;
-import me.minidigger.minicraft.protocol.client.ClientPlayPluginMessage;
-import me.minidigger.minicraft.protocol.client.ClientPlayPositionAndLook;
-import me.minidigger.minicraft.protocol.client.ClientStatusResponse;
-import me.minidigger.minicraft.protocol.server.ServerLoginEncryptionResponse;
-import me.minidigger.minicraft.protocol.server.ServerLoginStart;
-import me.minidigger.minicraft.protocol.server.ServerPlayBlockPlace;
-import me.minidigger.minicraft.protocol.server.ServerPlayChatMessage;
-import me.minidigger.minicraft.protocol.server.ServerPlayClientSettings;
-import me.minidigger.minicraft.protocol.server.ServerPlayKeepAlive;
-import me.minidigger.minicraft.protocol.server.ServerPlayLook;
-import me.minidigger.minicraft.protocol.server.ServerPlayPlayerAbilities;
-import me.minidigger.minicraft.protocol.server.ServerPlayPluginMessage;
-import me.minidigger.minicraft.protocol.server.ServerPlayPosition;
-import me.minidigger.minicraft.protocol.server.ServerPlayPositionAndLook;
-import me.minidigger.minicraft.protocol.server.ServerPlayTeleportConfirm;
-import me.minidigger.minicraft.protocol.server.ServerStatusPing;
-import me.minidigger.minicraft.protocol.server.ServerStatusRequest;
 
 public class MiniPacketRegistry {
 
@@ -85,13 +58,13 @@ public class MiniPacketRegistry {
         register(PacketDirection.TO_CLIENT, PacketState.LOGIN, 2, ClientLoginSuccess.class);
 
         // play
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x0E, ClientPlayChatMessage.class);
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x11, ClientPlayDeclareCommands.class);
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x18, ClientPlayPluginMessage.class);
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x20, ClientPlayKeepAlive.class);
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x21, ClientPlayChunkData.class);
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x25, ClientPlayJoinGame.class);
-        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x35, ClientPlayPositionAndLook.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x0F, ClientPlayChatMessage.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x12, ClientPlayDeclareCommands.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x19, ClientPlayPluginMessage.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x21, ClientPlayKeepAlive.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x22, ClientPlayChunkData.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x26, ClientPlayJoinGame.class);
+        register(PacketDirection.TO_CLIENT, PacketState.PLAY, 0x36, ClientPlayPositionAndLook.class);
     }
 
     public void register(PacketDirection direction, PacketState state, int packetId, Class<? extends MiniPacket> packetClass) {
