@@ -1,10 +1,20 @@
 package me.minidigger.minicraft.server;
 
+import me.minidigger.minicraft.api.Player;
+import me.minidigger.minicraft.api.Server;
+import me.minidigger.minicraft.model.*;
+import me.minidigger.minicraft.model.chunk.ChunkData;
+import me.minidigger.minicraft.model.chunk.ChunkPosition;
+import me.minidigger.minicraft.netty.MiniConnection;
+import me.minidigger.minicraft.protocol.MiniPacketHandler;
+import me.minidigger.minicraft.protocol.PacketDirection;
+import me.minidigger.minicraft.protocol.PacketState;
+import me.minidigger.minicraft.protocol.client.*;
+import me.minidigger.minicraft.protocol.server.*;
 import net.kyori.nbt.ListTag;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,39 +24,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
-
-import me.minidigger.minicraft.api.Player;
-import me.minidigger.minicraft.api.Server;
-import me.minidigger.minicraft.model.Dimension;
-import me.minidigger.minicraft.model.GameMode;
-import me.minidigger.minicraft.model.Key;
-import me.minidigger.minicraft.model.LevelType;
-import me.minidigger.minicraft.model.Position;
-import me.minidigger.minicraft.model.ServerStatusResponse;
-import me.minidigger.minicraft.model.chunk.ChunkData;
-import me.minidigger.minicraft.model.chunk.ChunkPosition;
-import me.minidigger.minicraft.netty.MiniConnection;
-import me.minidigger.minicraft.protocol.MiniPacketHandler;
-import me.minidigger.minicraft.protocol.PacketDirection;
-import me.minidigger.minicraft.protocol.PacketState;
-import me.minidigger.minicraft.protocol.client.ClientLoginEncryptionRequest;
-import me.minidigger.minicraft.protocol.client.ClientLoginSuccess;
-import me.minidigger.minicraft.protocol.client.ClientPlayChunkData;
-import me.minidigger.minicraft.protocol.client.ClientPlayDeclareCommands;
-import me.minidigger.minicraft.protocol.client.ClientPlayJoinGame;
-import me.minidigger.minicraft.protocol.client.ClientPlayPluginMessage;
-import me.minidigger.minicraft.protocol.client.ClientPlayPositionAndLook;
-import me.minidigger.minicraft.protocol.client.ClientStatusPong;
-import me.minidigger.minicraft.protocol.client.ClientStatusResponse;
-import me.minidigger.minicraft.protocol.server.ServerHandshake;
-import me.minidigger.minicraft.protocol.server.ServerLoginEncryptionResponse;
-import me.minidigger.minicraft.protocol.server.ServerLoginStart;
-import me.minidigger.minicraft.protocol.server.ServerPlayBlockPlace;
-import me.minidigger.minicraft.protocol.server.ServerPlayChatMessage;
-import me.minidigger.minicraft.protocol.server.ServerPlayClientSettings;
-import me.minidigger.minicraft.protocol.server.ServerPlayPluginMessage;
-import me.minidigger.minicraft.protocol.server.ServerStatusPing;
-import me.minidigger.minicraft.protocol.server.ServerStatusRequest;
 
 public class MiniServerPacketHandler extends MiniPacketHandler {
 
@@ -153,6 +130,8 @@ public class MiniServerPacketHandler extends MiniPacketHandler {
         joinGame.setLevelType(LevelType.AMPLIFIED);
         joinGame.setViewDistance(32);
         joinGame.setReducedDebugInfo(false);
+        joinGame.setRespawnScreen(true);
+        joinGame.setSeedHash(12345678); // We have no seed so just set it to this...
         connection.sendPacket(joinGame);
 
         ClientPlayPluginMessage brand = new ClientPlayPluginMessage();
@@ -162,7 +141,8 @@ public class MiniServerPacketHandler extends MiniPacketHandler {
 
         ClientPlayChunkData chunkData = new ClientPlayChunkData();
         chunkData.setChunkPosition(new ChunkPosition(0, 0));
-        chunkData.setFullChunk(true);
+        //TODO set biomes in chunk data
+        chunkData.setFullChunk(false);
 
         ChunkData chunk = new ChunkData();
         chunkData.setChunkData(chunk);
