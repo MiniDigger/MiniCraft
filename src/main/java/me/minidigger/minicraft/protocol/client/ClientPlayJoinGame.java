@@ -116,10 +116,12 @@ public class ClientPlayJoinGame extends MiniPacket {
                 .add("entityId", entityId)
                 .add("gameMode", gameMode)
                 .add("dimension", dimension)
+                .add("seedHash", seedHash)
                 .add("maxplayers", maxplayers)
                 .add("levelType", levelType)
                 .add("viewDistance", viewDistance)
                 .add("reducedDebugInfo", reducedDebugInfo)
+                .add("respawnScreen", respawnScreen)
                 .toString();
     }
 }
